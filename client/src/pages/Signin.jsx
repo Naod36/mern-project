@@ -57,7 +57,7 @@ export default function SignIn() {
             to="/"
             className="m-3 self-center flex font-semibold dark:text-white text-4xl"
           >
-            <span className=" text-black  self-center whitespace-nowrap text-xl font-semibold dark:text-wight">
+            <span className="  self-center whitespace-nowrap text-xl font-semibold">
               <img src="/logo.png" className="mr-3 h-12 sm:h-14 " alt="Logo" />
             </span>
             Court

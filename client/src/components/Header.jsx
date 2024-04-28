@@ -1,23 +1,26 @@
 import { Navbar, TextInput, Button, Dropdown, Avatar } from "flowbite-react";
 import { Link, useLocation } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
-import { FaMoon } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { FaMoon, FaSun } from "react-icons/fa";
+import { useSelector, useDispatch } from "react-redux";
+import { toggleTheme } from "../redux/theme/themeSlice";
 
 export default function Header() {
   const path = useLocation().pathname;
+  const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
+  const { theme } = useSelector((state) => state.theme);
   return (
-    <Navbar fluid rounded className="border-b-2">
+    <Navbar className="border-b-2">
       <Link
         to="/"
-        className="self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-wight"
+        className=" flex self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white"
       >
-        <div className="px-2 py-1 flex ">
+        <div className="flex px-2 py-1  ">
           <img src="/logo.png" className="mr-3 h-8 sm:h-9" alt="Logo" />
-          <span className=" text-black  self-center whitespace-nowrap text-xl font-semibold dark:text-wight">
+          <div className="  self-center whitespace-nowrap text-2xl font-semibold ">
             Court
-          </span>
+          </div>
         </div>
       </Link>
       <form>
@@ -33,8 +36,13 @@ export default function Header() {
         <AiOutlineSearch />
       </Button>
       <div className="flex gap-2 md:order-2">
-        <Button className="w-12 h-10 hidden sm:inline" color="gray">
-          <FaMoon />
+        <Button
+          className="w-12 h-10 hidden sm:inline "
+          pill
+          color="gray"
+          onClick={() => dispatch(toggleTheme())}
+        >
+          {theme === "dark" ? <FaSun color="white" /> : <FaMoon />}
         </Button>
         {currentUser ? (
           <Dropdown

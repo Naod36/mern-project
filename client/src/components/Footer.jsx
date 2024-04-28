@@ -11,11 +11,11 @@ export default function FooterCom() {
           <div className="sm:mt-10">
             <Link
               to="/"
-              className=" self-center whitespace-nowrap text-lg sm:text-xl font-semibold dark:text-wight"
+              className=" self-center whitespace-nowrap text-lg sm:text-xl font-semibold dark:text-white"
             >
               <div className="flex px-2 py-1  ">
                 <img src="/logo.png" className="mr-3 h-8 sm:h-9" alt="Logo" />
-                <div className=" text-black  self-center whitespace-nowrap text-2xl font-semibold dark:text-wight">
+                <div className="  self-center whitespace-nowrap text-2xl font-semibold ">
                   Court
                 </div>
               </div>
