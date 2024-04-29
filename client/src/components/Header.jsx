@@ -5,11 +5,18 @@ import { FaMoon, FaSun } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleTheme } from "../redux/theme/themeSlice";
 
+import lightLogo from "/logo.png";
+import darkLogo from "/logo-L.png";
+
 export default function Header() {
   const path = useLocation().pathname;
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
   const { theme } = useSelector((state) => state.theme);
+
+  // Determine which logo to use based on the current theme
+  const logo = theme === "dark" ? darkLogo : lightLogo;
+
   return (
     <Navbar className="border-b-2">
       <Link
@@ -17,7 +24,7 @@ export default function Header() {
         className=" flex self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white"
       >
         <div className="flex px-2 py-1  ">
-          <img src="/logo.png" className="mr-3 h-8 sm:h-9" alt="Logo" />
+          <img src={logo} className="mr-3 h-8 sm:h-9" alt="Logo" />
           <div className="  self-center whitespace-nowrap text-2xl font-semibold ">
             Court
           </div>

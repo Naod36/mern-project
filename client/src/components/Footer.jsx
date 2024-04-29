@@ -2,8 +2,16 @@ import React from "react";
 import { Footer, FooterCopyright } from "flowbite-react";
 import { Link } from "react-router-dom";
 import { BsFacebook, BsTwitter, BsInstagram, BsGithub } from "react-icons/bs";
+import { useSelector } from "react-redux";
+
+import lightLogo from "/logo.png";
+import darkLogo from "/logo-L.png";
 
 export default function FooterCom() {
+  const { theme } = useSelector((state) => state.theme);
+  // Determine which logo to use based on the current theme
+  const logo = theme === "dark" ? darkLogo : lightLogo;
+
   return (
     <Footer container className="border bottom-t-8 border-teal-300">
       <div className="w-full max-w-7xl mx-auto">
@@ -14,7 +22,7 @@ export default function FooterCom() {
               className=" self-center whitespace-nowrap text-lg sm:text-xl font-semibold dark:text-white"
             >
               <div className="flex px-2 py-1  ">
-                <img src="/logo.png" className="mr-3 h-8 sm:h-9" alt="Logo" />
+                <img src={logo} className="mr-3 h-8 sm:h-9" alt="Logo" />
                 <div className="  self-center whitespace-nowrap text-2xl font-semibold ">
                   Court
                 </div>

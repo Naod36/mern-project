@@ -2,6 +2,10 @@ import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import OAuth from "../components/OAuth";
+import { useSelector } from "react-redux";
+
+import lightLogo from "/logo.png";
+import darkLogo from "/logo-L.png";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({});
@@ -42,6 +46,11 @@ export default function SignUp() {
       setLoading(false);
     }
   };
+  const { theme } = useSelector((state) => state.theme);
+
+  // Determine which logo to use based on the current theme
+  const logo = theme === "dark" ? darkLogo : lightLogo;
+
   return (
     <div className="min-h-screen mt-20">
       <div className="flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center gap-5">
@@ -52,7 +61,7 @@ export default function SignUp() {
             className="m-3 self-center flex font-semibold dark:text-white text-4xl"
           >
             <span className=" text-black  self-center whitespace-nowrap text-xl font-semibold dark:text-wight">
-              <img src="/logo.png" className="mr-3 h-12 sm:h-14 " alt="Logo" />
+              <img src={logo} className="mr-3 h-12 sm:h-14 " alt="Logo" />
             </span>
             Court
           </Link>
