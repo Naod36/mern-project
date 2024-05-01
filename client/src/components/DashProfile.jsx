@@ -23,9 +23,10 @@ import {
 } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { Link } from "react-router-dom";
 
 export default function DashProfile() {
-  const { currentUser, error } = useSelector((state) => state.user);
+  const { currentUser, error, loading } = useSelector((state) => state.user);
   const navigate = useNavigate();
 
   const [imageFile, setImageFile] = useState(null);
@@ -238,9 +239,24 @@ export default function DashProfile() {
           placeholder="password"
           onChange={handleChange}
         />
-        <Button type="submit" gradientDuoTone={"purpleToBlue"}>
-          Update
+        <Button
+          type="submit"
+          gradientDuoTone="purpleToBlue"
+          disabled={loading || imageFileUploading}
+        >
+          {loading ? "Updating..." : "Update"}
         </Button>
+        {currentUser.isAdmin && (
+          <Link to="/create-case-template">
+            <Button
+              type="button"
+              gradientDuoTone={"purpleToBlue"}
+              className="w-full"
+            >
+              Creat Case Template
+            </Button>
+          </Link>
+        )}
       </form>
       <div className=" flex justify-between mt-3">
         <span onClick={handleSignOut} className="cursor-pointer">

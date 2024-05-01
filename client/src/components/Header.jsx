@@ -44,7 +44,7 @@ export default function Header() {
         <div className="flex px-2 py-1  ">
           <img src={logo} className="mr-3 h-8 sm:h-9" alt="Logo" />
           <div className="  self-center whitespace-nowrap text-2xl font-semibold ">
-            Court
+            CCFS
           </div>
         </div>
       </Link>

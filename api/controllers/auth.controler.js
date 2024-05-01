@@ -47,6 +47,7 @@ export const signin = async (req, res, next) => {
     const token = jwt.sign(
       {
         id: validUser._id,
+        isAdmin: validUser.isAdmin,
       },
       process.env.JWT_SECRET
     );
@@ -69,6 +70,21 @@ export const google = async (req, res, next) => {
     let user = await User.findOne({ email });
 
     // If the user doesn't exist in the database, create a new user
+    if (user) {
+      const token = jwt.sign(
+        {
+          id: user._id,
+          isAdmin: user.isAdmin,
+        },
+        process.env.JWT_SECRET
+      );
+      const { password, ...rest } = user._doc;
+      res
+        .status(200)
+        .cookie("access_token", token, { httpOnly: true })
+        .json(rest);
+    }
+
     if (!user) {
       const generatedPassword =
         Math.random().toString(36).slice(-8) +
@@ -89,6 +105,7 @@ export const google = async (req, res, next) => {
     const token = jwt.sign(
       {
         id: user._id,
+        isAdmin: user.isAdmin,
       },
       process.env.JWT_SECRET
     );
