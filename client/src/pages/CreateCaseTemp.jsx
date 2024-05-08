@@ -11,12 +11,16 @@ import { app } from "../firebase";
 import { useState } from "react";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateCaseTemp() {
   const [file, setFile] = useState(null);
   const [imageUploadingProgress, setImageUploadingProgress] = useState(null);
   const [imageUploadingError, setImageUploadingError] = useState(null);
   const [formData, setFormData] = useState({});
+  const [createTempError, setCreateTempError] = useState(null);
+
+  const navigate = useNavigate();
   const handleUploadImage = async () => {
     try {
       if (!file) {
@@ -53,10 +57,34 @@ export default function CreateCaseTemp() {
       console.log(error);
     }
   };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("/api/case/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setCreateTempError(data.message);
+        return;
+      }
+
+      if (res.ok) {
+        setCreateTempError(null);
+        navigate(`/case/${data.title}`);
+      }
+    } catch (error) {
+      setCreateTempError(error.message);
+    }
+  };
   return (
     <div className="p-3 max-w-3xl mx-auto min-h-screen">
       <h1 className="p-5 my-7 text-3xl  font-bold">Create Case Template</h1>
-      <form className="flex flex-col gap-4">
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-4 sm:flex-row justify-between">
           <TextInput
             type="text"
@@ -64,8 +92,15 @@ export default function CreateCaseTemp() {
             required
             id="title"
             className="flex-1"
+            onChange={(e) =>
+              setFormData({ ...formData, title: e.target.value })
+            }
           />
-          <Select>
+          <Select
+            onChange={(e) =>
+              setFormData({ ...formData, category: e.target.value })
+            }
+          >
             <option value="Ucategorized">Select Category</option>
             <option value="option1">Option 1</option>
             <option value="option2">Option 2</option>
@@ -112,10 +147,16 @@ export default function CreateCaseTemp() {
           placeholder="Write something..."
           className="mb-10 h-52 "
           required
+          onChange={(value) => setFormData({ ...formData, content: value })}
         />
         <Button type="submit" gradientDuoTone="purpleToBlue">
           Add Template
         </Button>
+        {createTempError && (
+          <Alert className="mt-5" color="failure">
+            {createTempError}
+          </Alert>
+        )}
       </form>
     </div>
   );
