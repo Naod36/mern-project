@@ -2,6 +2,8 @@ import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import DashSidebar from "../components/DashSidebar";
 import DashProfile from "../components/DashProfile";
+import DashCases from "../components/DashCases";
+import DashCasesTemplates from "../components/DashCasesTemplates";
 
 export default function Dashboard() {
   const location = useLocation();
@@ -21,6 +23,10 @@ export default function Dashboard() {
       </div>
       {/*content*/}
       {tab === "profile" && <DashProfile />}
+      {/*cases template for admins */}
+      {tab === "case-templates" && <DashCasesTemplates />}
+      {/*my cases for users*/}
+      {tab === "cases" && <DashCases />}
     </div>
   );
 }
