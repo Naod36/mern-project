@@ -52,7 +52,7 @@ export default function DashSidebar() {
           {currentUser.isAdmin && (
             <Link to="/dashboard?tab=case-templates">
               <Sidebar.Item
-                active={tab === "cases"}
+                active={tab === "case-templates"}
                 icon={HiDocumentText}
                 as="div"
               >
