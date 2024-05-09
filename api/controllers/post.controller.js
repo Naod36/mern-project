@@ -67,3 +67,15 @@ export const getcasetemplates = async (req, res, next) => {
     console.log(error);
   }
 };
+
+export const deletecasetemplate = async (req, res, next) => {
+  if (!req.user.isAdmin || req.user.id !== req.params.userId) {
+    return next(errorHandler(403, "You are not allowed to delete this post"));
+  }
+  try {
+    await Case.findByIdAndDelete(req.params.caseId);
+    res.status(200).json("Case Template has been deleted");
+  } catch (error) {
+    return next(error);
+  }
+};
