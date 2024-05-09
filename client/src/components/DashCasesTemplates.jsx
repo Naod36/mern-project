@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 export default function DashCasesTemplates() {
   const { currentUser } = useSelector((state) => state.user);
   const [userCases, setUserCases] = useState([]);
+  const [showMore, setShowMore] = useState(true);
   console.log(userCases);
   useEffect(() => {
     const fetchCases = async () => {
@@ -25,6 +26,23 @@ export default function DashCasesTemplates() {
       fetchCases();
     }
   }, [currentUser._id]);
+  const handleShowMore = async () => {
+    const startIndex = userCases.length;
+    try {
+      const res = await fetch(
+        `/api/case/getcasetemplates?userId=${currentUser._id}&startIndex=${startIndex}`
+      );
+      const data = await res.json();
+      if (res.ok) {
+        setUserCases((prev) => [...prev, ...data.cases]);
+        if (data.cases.length < 9) {
+          setShowMore(false);
+        }
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
       {currentUser.isAdmin && userCases.length > 0 ? (
@@ -81,6 +99,14 @@ export default function DashCasesTemplates() {
               </Table.Body>
             ))}
           </Table>
+          {showMore && (
+            <button
+              className="text-teal-500 w-full self-center text-sm py-7"
+              onClick={handleShowMore}
+            >
+              Show More
+            </button>
+          )}
         </>
       ) : (
         <p>No Case Template Yet</p>
