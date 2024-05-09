@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const postSchema = new mongoose.Schema(
+const caseSchema = new mongoose.Schema(
   {
     userId: {
       type: String,
@@ -33,6 +33,6 @@ const postSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Post = mongoose.model("Post", postSchema);
+const Case = mongoose.model("Case", caseSchema);
 
-export default Post;
+export default Case;
