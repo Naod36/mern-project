@@ -53,7 +53,7 @@ export default function DashCaseSubmitions() {
             <Table.Head>
               <Table.HeadCell>Date Updated</Table.HeadCell>
               <Table.HeadCell>Case Image</Table.HeadCell>
-              <Table.HeadCell>Case Filler</Table.HeadCell>
+              <Table.HeadCell>User</Table.HeadCell>
               <Table.HeadCell>Category</Table.HeadCell>
               <Table.HeadCell>Delete</Table.HeadCell>
               <Table.HeadCell>
@@ -61,7 +61,10 @@ export default function DashCaseSubmitions() {
               </Table.HeadCell>
             </Table.Head>
             {userCases.map((caseTemplate) => (
-              <Table.Body className="divide-y divide-gray-200 dark:divide-gray-700">
+              <Table.Body
+                key={caseTemplate._id}
+                className="divide-y divide-gray-200 dark:divide-gray-700"
+              >
                 <Table.Row className="bg-white dark:border-gray-800 dark:bg-gray-800">
                   <Table.Cell>
                     {new Date(caseTemplate.updatedAt).toLocaleDateString()}
@@ -80,7 +83,7 @@ export default function DashCaseSubmitions() {
                       className="font-medium text-gray-900 dark:text-white"
                       to={`/case/${caseTemplate._id}`}
                     >
-                      {caseTemplate.names.firstName}
+                      {caseTemplate.userId.username}
                     </Link>
                   </Table.Cell>
                   <Table.Cell>{caseTemplate.category}</Table.Cell>

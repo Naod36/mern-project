@@ -1,9 +1,8 @@
 import Answer from "../models/case.model.js";
+import User from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js";
 
 export const submitAnswer = async (req, res, next) => {
-  console.log(req.body); // Log request body for debugging
-
   try {
     // Extract data from request body
     const { names, file } = req.body;
@@ -15,7 +14,6 @@ export const submitAnswer = async (req, res, next) => {
       file,
       date: new Date(),
       state: "pending",
-      userId: req.user.id,
     });
 
     // Save the answer to the database
@@ -49,9 +47,14 @@ export const getAllAnswers = async (req, res, next) => {
     const sortDirection = req.query.order === "asc" ? 1 : -1;
     // Fetch all answers from the database
     const answers = await Answer.find()
+      .populate({
+        path: "userId",
+        select: "username", // Populate only the username field
+      })
       .sort({ updateAt: sortDirection })
       .skip(startIndex)
       .limit(limit);
+    console.log("Fetched Answers:", answers);
 
     const totalAnswers = await Answer.countDocuments();
 

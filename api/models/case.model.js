@@ -1,10 +1,12 @@
 import mongoose from "mongoose";
 
+const { Schema } = mongoose;
 // Define schema for the answer
 const AnswerSchema = new mongoose.Schema(
   {
     userId: {
-      type: String,
+      type: Schema.Types.ObjectId, // Use ObjectId type for referencing the User model
+      ref: "User", // Reference the User model
       required: true,
     },
     names: [
