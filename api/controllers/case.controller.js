@@ -14,6 +14,7 @@ export const submitAnswer = async (req, res, next) => {
       file,
       date: new Date(),
       state: "pending",
+      userId: req.user.id,
     });
 
     // Save the answer to the database

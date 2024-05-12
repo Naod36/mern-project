@@ -9,35 +9,50 @@ const AnswerSchema = new mongoose.Schema(
       ref: "User", // Reference the User model
       required: true,
     },
-    names: [
-      {
-        firstName: {
-          type: String,
-          required: true,
-        },
-        middleName: {
-          type: String,
-          default: "",
-        },
-        lastName: {
-          type: String,
-          required: true,
-        },
-        image: {
-          type: String, // You can adjust the type as per your requirements (e.g., Buffer for file upload)
-          required: true,
-        },
-      },
-    ],
-
+    firstName: {
+      type: String,
+      required: true,
+    },
+    middleName: {
+      type: String,
+      required: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+    },
+    spouseFirstName: {
+      type: String,
+      required: true,
+    },
+    spouseMiddleName: {
+      type: String,
+      required: true,
+    },
+    spouseLastName: {
+      type: String,
+      required: true,
+    },
+    image1: {
+      type: String, // You can adjust the type as per your requirements (e.g., Buffer for file upload)
+      required: true,
+    },
+    image2: {
+      type: String, // You can adjust the type as per your requirements (e.g., Buffer for file upload)
+      required: true,
+    },
     category: {
       type: String,
       default: "Divorce Case",
     },
+    details: {
+      type: String,
+      required: true,
+    },
 
     date: {
       type: Date,
-      required: true,
+      default: Date.now,
     },
     state: {
       type: String,
