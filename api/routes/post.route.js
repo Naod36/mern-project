@@ -9,6 +9,7 @@ import {
 const router = express.Router();
 
 router.post("/create", verifyToken, create);
+
 router.get("/getcasetemplates", getcasetemplates);
 router.delete(
   "/deletecasetemplate/:caseId/:userId",

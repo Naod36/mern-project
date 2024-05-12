@@ -60,6 +60,18 @@ export default function DashSidebar() {
               </Sidebar.Item>
             </Link>
           )}
+
+          {currentUser.isAdmin && (
+            <Link to="/dashboard?tab=case-submitions">
+              <Sidebar.Item
+                active={tab === "case-submitions"}
+                icon={HiDocumentText}
+                as="div"
+              >
+                Case Submitions
+              </Sidebar.Item>
+            </Link>
+          )}
           {!currentUser.isAdmin && (
             <Link to="/dashboard?tab=cases">
               <Sidebar.Item
