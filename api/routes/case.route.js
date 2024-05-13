@@ -3,6 +3,7 @@ import {
   submitAnswer,
   processAnswer,
   getAllAnswers,
+  myCases,
 } from "../controllers/case.controller.js";
 import { verifyToken } from "../utils/verifyUser.js";
 
@@ -12,7 +13,7 @@ const router = express.Router();
 router.post("/submit-answer", verifyToken, submitAnswer);
 
 router.get("/getAllAnswers", verifyToken, getAllAnswers);
-
+router.get("/my-cases", verifyToken, myCases);
 // Endpoint for admin approval/denial
 router.post("/process-answer", verifyToken, processAnswer);
 

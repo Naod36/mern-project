@@ -16,8 +16,6 @@ import { useNavigate } from "react-router-dom";
 export default function CreateCaseTemp() {
   const [file, setFile] = useState(null);
   const [file2, setFile2] = useState(null);
-  const [details, setDetails] = useState("");
-
   const [imageUploadingProgress, setImageUploadingProgress] = useState(null);
   const [imageUploadingError, setImageUploadingError] = useState(null);
   const [formData, setFormData] = useState({});
@@ -116,7 +114,7 @@ export default function CreateCaseTemp() {
 
       if (res.ok) {
         setCreateTempError(null);
-        navigate(`/case/${data.title}`);
+        navigate(`/case/${data._id}`);
       }
     } catch (error) {
       setCreateTempError(error.message);

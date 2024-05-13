@@ -75,7 +75,7 @@ export default function CreateCaseTemp() {
 
       if (res.ok) {
         setCreateTempError(null);
-        navigate(`/case/${data.title}`);
+        navigate(`/case/${data._id}`);
       }
     } catch (error) {
       setCreateTempError(error.message);
