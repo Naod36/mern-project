@@ -4,6 +4,7 @@ import {
   create,
   deletecasetemplate,
   getcasetemplates,
+  updatecasetemplate,
 } from "../controllers/post.controller.js";
 
 const router = express.Router();
@@ -15,6 +16,11 @@ router.delete(
   "/deletecasetemplate/:caseId/:userId",
   verifyToken,
   deletecasetemplate
+);
+router.put(
+  "/updatecasetemplate/:caseId/:userId",
+  verifyToken,
+  updatecasetemplate
 );
 
 export default router;

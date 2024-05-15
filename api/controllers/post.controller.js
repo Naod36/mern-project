@@ -58,6 +58,13 @@ export const getcasetemplates = async (req, res, next) => {
     const lastMonthCases = await Case.countDocuments({
       createdAt: { $gte: oneMonthAgo },
     });
+
+    // Ensure each case has an 'id' property
+    // const casesWithId = cases.map((caseItem) => ({
+    //   ...caseItem.toObject(), // Convert Mongoose document to plain object
+    //   id: caseItem._id.toString(), // Add 'id' property
+    // }));
+
     res.status(200).json({
       cases,
       totalCases,
@@ -77,5 +84,30 @@ export const deletecasetemplate = async (req, res, next) => {
     res.status(200).json("Case Template has been deleted");
   } catch (error) {
     return next(error);
+  }
+};
+
+export const updatecasetemplate = async (req, res, next) => {
+  if (!req.user.isAdmin || req.user.id !== req.params.userId) {
+    return next(
+      errorHandler(403, "You are not allowed to update this case template")
+    );
+  }
+  try {
+    const updatedPost = await Case.findByIdAndUpdate(
+      req.params.caseId,
+      {
+        $set: {
+          title: req.body.title,
+          content: req.body.content,
+          category: req.body.category,
+          image: req.body.image,
+        },
+      },
+      { new: true }
+    );
+    res.status(200).json("Case Template has been updated");
+  } catch (error) {
+    next(error);
   }
 };
