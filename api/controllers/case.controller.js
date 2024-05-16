@@ -175,7 +175,10 @@ export const myCases = async (req, res, next) => {
     const limit = parseInt(req.query.limit) || 9;
     const sortDirection = req.query.order === "asc" ? 1 : -1;
     // Fetch cases created by the current user from the database
-    const mycases = await Answer.find({ userId })
+    const mycases = await Answer.find({
+      userId,
+      ...(req.query.caseId && { _id: req.query.caseId }),
+    })
       .sort({ updateAt: sortDirection })
       .skip(startIndex)
       .limit(limit);
@@ -194,7 +197,7 @@ export const myCases = async (req, res, next) => {
 
     res
       .status(200)
-      .json({ success: true, mycases, totalAnswers, lastMonthAnswers });
+      .json({ success: true, mycases, totalCases, lastMonthAnswers });
     console.log("cases", mycases);
   } catch (error) {
     // Handle errors
