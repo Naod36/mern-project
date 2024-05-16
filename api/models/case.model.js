@@ -52,11 +52,10 @@ const AnswerSchema = new Schema(
 
     date: {
       type: Date,
-      default: Date.now,
     },
     state: {
       type: String,
-      enum: ["pending", "Approved", "Rejected"],
+      enum: ["pending", "approved", "denied"],
       default: "pending",
     },
   },

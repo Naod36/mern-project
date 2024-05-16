@@ -1,17 +1,19 @@
 import { FileInput, Select, TextInput, Button, Alert } from "flowbite-react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import {
-  getDownloadURL,
-  getStorage,
-  ref,
-  uploadBytesResumable,
-} from "firebase/storage";
-import { app } from "../firebase";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { useState, useEffect } from "react";
-import "react-circular-progressbar/dist/styles.css";
 import { useNavigate, useParams } from "react-router-dom";
 
+// import ReactQuill from "react-quill";
+// import "react-quill/dist/quill.snow.css";
+// import {
+//   getDownloadURL,
+//   getStorage,
+//   ref,
+//   uploadBytesResumable,
+// } from "firebase/storage";
+// import { app } from "../firebase";
+// import "react-circular-progressbar/dist/styles.css";
 export default function CaseSubmitionReview() {
   const [formData, setFormData] = useState({});
   const [createTempError, setCreateTempError] = useState(null);
@@ -19,13 +21,49 @@ export default function CaseSubmitionReview() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const [state, setstate] = useState("pending"); // Default to 'approved'
+  const [date, setDate] = useState(null);
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+
     try {
-      const fetchCaseSubmition = async () => {
+      const res = await fetch(`/api/case/process-answer/${caseId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...formData, date, state }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setCreateTempError(data.message);
+        return;
+      }
+
+      if (state === "approved" && !date) {
+        setError("Please select a date.");
+        console.log(state);
+        return;
+      }
+      if (res.ok) {
+        setCreateTempError(null);
+        // navigate(`/case/${data.slug}`);
+        // Validate date format if action is 'approved'
+      }
+    } catch (error) {
+      setError("An error occurred while processing the answer.");
+    }
+  };
+
+  useEffect(() => {
+    const fetchCaseSubmition = async () => {
+      try {
         const res = await fetch(`/api/case/getAllAnswers?caseId=${caseId}`);
         const data = await res.json();
         if (!res.ok) {
-          console.log(data.message);
           setCreateTempError(data.message);
           return;
         }
@@ -34,11 +72,11 @@ export default function CaseSubmitionReview() {
           setFormData(data.answers[0]);
           setCreateTempError(null);
         }
-      };
-      fetchCaseSubmition();
-    } catch (error) {
-      console.log(error.message);
-    }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+    fetchCaseSubmition();
   }, [caseId]);
 
   return (
@@ -48,7 +86,7 @@ export default function CaseSubmitionReview() {
       </h1>
       <hr className="my-5 border border-gray-400 dark:border-gray-700" />
 
-      <form>
+      <form onSubmit={handleSubmit}>
         <h2 className="text-2xl mb-6 font-bold text-center">
           Your Information
         </h2>
@@ -99,7 +137,9 @@ export default function CaseSubmitionReview() {
                 <FileInput
                   type="file"
                   accept="image/*"
-                  onChange={(e) => setFile(e.target.files[0])}
+                  onChange={(e) =>
+                    setFormData({ ...formData, image1: e.target.files[0] })
+                  }
                 />
               </>
             )}
@@ -156,21 +196,54 @@ export default function CaseSubmitionReview() {
                 <FileInput
                   type="file"
                   accept="image/*"
-                  onChange={(e) => setFile2(e.target.files[0])}
+                  onChange={(e) =>
+                    setFormData({ ...formData, image2: e.target.files[0] })
+                  }
                 />
               </>
             )}
           </div>
         </div>
-        <h2 className="my-5 text-xl">Write your case</h2>
+        {/* <h2 className="my-5 text-xl">Write your case</h2>
         <ReactQuill
           theme="snow"
           placeholder="Write something..."
           className="mb-10 h-52 "
           required
           onChange={(value) => setFormData({ ...formData, details: value })}
-        />
-        <div className="flex flex-col mb-5">
+        /> */}
+        <div className="flex flex-col mb-5 gap-4">
+          <div className="flex flex-row gap-4">
+            <label>
+              <input
+                type="radio"
+                value="approved"
+                checked={state === "approved"}
+                onChange={() => setstate("approved")}
+              />
+              Approve
+            </label>
+            <label>
+              <input
+                type="radio"
+                value="denied"
+                checked={state === "denied"}
+                onChange={() => setstate("denied")}
+              />
+              Deny
+            </label>
+          </div>
+          {state === "approved" && (
+            <DatePicker
+              selected={date}
+              onChange={(date) => setDate(date)}
+              dateFormat="yyyy-MM-dd"
+              showTimeSelect
+              timeIntervals={30}
+              timeFormat="hh:mm"
+              className="p-2 border rounded text-red-500 "
+            />
+          )}
           <Button type="submit" gradientDuoTone="purpleToBlue">
             Submit Case
           </Button>
@@ -180,6 +253,7 @@ export default function CaseSubmitionReview() {
             </Alert>
           )}
         </div>
+        {error && <Alert color="failure">{error}</Alert>}
       </form>
     </div>
   );

@@ -18,6 +18,6 @@ router.get("/getAnswers", getAnswers);
 
 router.get("/my-cases", verifyToken, myCases);
 // Endpoint for admin approval/denial
-router.post("/process-answer", verifyToken, processAnswer);
+router.put("/process-answer/:caseId", verifyToken, processAnswer);
 
 export default router;

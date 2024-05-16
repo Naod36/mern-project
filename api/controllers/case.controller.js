@@ -123,7 +123,7 @@ export const getAnswers = async (req, res, next) => {
 };
 
 // Controller for handling admin approval/denial
-export const processAnswer = async (req, res, next) => {
+export const processnswer = async (req, res, next) => {
   try {
     // Check if user is an admin
     if (!req.user.isAdmin) {
@@ -199,5 +199,27 @@ export const myCases = async (req, res, next) => {
   } catch (error) {
     // Handle errors
     console.log(error);
+  }
+};
+export const processAnswer = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return next(
+      errorHandler(403, "You are not allowed to update this case template")
+    );
+  }
+  try {
+    const updatedPost = await Answer.findByIdAndUpdate(
+      req.params.caseId,
+      {
+        $set: {
+          date: req.body.date,
+          state: req.body.state,
+        },
+      },
+      { new: true }
+    );
+    res.status(200).json(updatedPost);
+  } catch (error) {
+    next(error);
   }
 };
