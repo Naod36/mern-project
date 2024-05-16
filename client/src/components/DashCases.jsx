@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Modal, Table, Button } from "flowbite-react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { HiOutlineExclamation } from "react-icons/hi";
 
-export default function DashCasesTemplates() {
+export default function DashCases() {
   const { currentUser } = useSelector((state) => state.user);
   const [userCases, setUserCases] = useState([]);
   const [showMore, setShowMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [caseIdToDelete, setCaseIdToDelete] = useState("");
+  const { caseId } = useParams();
+
   useEffect(() => {
     const fetchCases = async () => {
       try {
@@ -23,9 +25,8 @@ export default function DashCasesTemplates() {
         console.log(error.message);
       }
     };
-    if (currentUser.isAdmin) {
-      fetchCases();
-    }
+
+    fetchCases();
   }, [currentUser._id]);
   const handleShowMore = async () => {
     const startIndex = userCases.length;
@@ -42,6 +43,18 @@ export default function DashCasesTemplates() {
       }
     } catch (error) {
       console.log(error.message);
+    }
+  };
+
+  const getStyle = (state) => {
+    switch (state) {
+      case "approved":
+        return { color: "green", fontWeight: "bold" };
+
+      case "rejected":
+        return { color: "red", fontWeight: "bold" };
+      default:
+        return { color: "orange", fontWeight: "bold" };
     }
   };
 
@@ -82,13 +95,16 @@ export default function DashCasesTemplates() {
               </Table.HeadCell>
             </Table.Head>
             {userCases.map((caseTemplate) => (
-              <Table.Body className="divide-y divide-gray-200 dark:divide-gray-700">
+              <Table.Body
+                key={caseTemplate._id}
+                className="divide-y divide-gray-200 dark:divide-gray-700"
+              >
                 <Table.Row className="bg-white dark:border-gray-800 dark:bg-gray-800">
                   <Table.Cell>
                     {new Date(caseTemplate.updatedAt).toLocaleDateString()}
                   </Table.Cell>
                   <Table.Cell>
-                    <Link to={`/case/${caseTemplate._id}`}>
+                    <Link to={`/update-my-case/${caseTemplate._id}`}>
                       <img
                         src={caseTemplate.image}
                         alt={caseTemplate.title}
@@ -116,13 +132,8 @@ export default function DashCasesTemplates() {
                       Delete
                     </span>
                   </Table.Cell>
-                  <Table.Cell>
-                    <Link
-                      className="text-teal-500 hover:underline"
-                      to={`/update-post/${caseTemplate._id}`}
-                    >
-                      <span>Edit</span>
-                    </Link>
+                  <Table.Cell style={getStyle(caseTemplate.state)}>
+                    {caseTemplate.state}
                   </Table.Cell>
                 </Table.Row>
               </Table.Body>

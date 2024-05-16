@@ -12,6 +12,7 @@ import OnlyAdminPrivateRoute from "./components/OnlyAdminPrivateRoute";
 import CreateCaseTemp from "./pages/CreateCaseTemp";
 import CaseSubmition from "./pages/CaseSubmition";
 import UpdatePost from "./pages/UpdatePost";
+import UpdateMyCase from "./pages/UpdateMyCase";
 import CaseSubmitionReview from "./pages/CaseSubmitionReview";
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="/case-submition" element={<CaseSubmition />} />
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/update-my-case/:caseId" element={<UpdateMyCase />} />
         </Route>
         <Route element={<OnlyAdminPrivateRoute />}>
           <Route path="/create-case-template" element={<CreateCaseTemp />} />
