@@ -35,13 +35,24 @@ export default function DashCaseSubmitions() {
       );
       const data = await res.json();
       if (res.ok) {
-        setUserCases((prev) => [...prev, ...data.cases]);
-        if (data.cases.length < 9) {
+        setUserCases((prev) => [...prev, ...data.answers]);
+        if (data.answers.length < 9) {
           setShowMore(false);
         }
       }
     } catch (error) {
       console.log(error.message);
+    }
+  };
+  const getStyle = (state) => {
+    switch (state) {
+      case "Approved":
+        return { color: "green", fontWeight: "bold" };
+
+      case "Rejected":
+        return { color: "red", fontWeight: "bold" };
+      default:
+        return { color: "orange", fontWeight: "bold" };
     }
   };
 
@@ -52,63 +63,62 @@ export default function DashCaseSubmitions() {
           <Table hoverable className="shadow-md">
             <Table.Head>
               <Table.HeadCell>Date Updated</Table.HeadCell>
-              <Table.HeadCell>Case Image</Table.HeadCell>
-              <Table.HeadCell>User</Table.HeadCell>
+              <Table.HeadCell>User Image</Table.HeadCell>
+              <Table.HeadCell>Username</Table.HeadCell>
               <Table.HeadCell>Category</Table.HeadCell>
-              <Table.HeadCell>Delete</Table.HeadCell>
-              <Table.HeadCell>
-                <span>Edit</span>
-              </Table.HeadCell>
+              <Table.HeadCell>Status</Table.HeadCell>
             </Table.Head>
-            {userCases.map((caseTemplate) => (
-              <Table.Body
-                key={caseTemplate._id}
-                className="divide-y divide-gray-200 dark:divide-gray-700"
-              >
-                <Table.Row className="bg-white dark:border-gray-800 dark:bg-gray-800">
-                  <Table.Cell>
-                    {new Date(caseTemplate.updatedAt).toLocaleDateString()}
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Link to={`/case/${caseTemplate._id}`}>
-                      <img
-                        src="https://media.istockphoto.com/id/1145122267/vector/law-order-court-symbols-vector-illustration.jpg?s=612x612&w=0&k=20&c=zUiwEJDkWJcI2p5fLRdbcBxwFONAampY8inYpol0v0g="
-                        alt={caseTemplate.category}
-                        className="w-20 h-10 object-cover bg-gray-500"
-                      />
-                    </Link>
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Link
-                      className="font-medium text-gray-900 dark:text-white"
-                      to={`/case/${caseTemplate._id}`}
-                    >
-                      {caseTemplate.userId.username}
-                    </Link>
-                  </Table.Cell>
-                  <Table.Cell>{caseTemplate.category}</Table.Cell>
-                  <Table.Cell>
-                    <span
-                      onClick={() => {
-                        setShowModal(true);
-                        setCaseIdToDelete(caseTemplate._id);
-                      }}
-                      className="text-red-500 font-medium hover:underline cursor-pointer"
-                    >
-                      Delete
-                    </span>
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Link
-                      className="text-teal-500 hover:underline"
-                      to={`/update-post/${caseTemplate._id}`}
-                    >
-                      <span>Edit</span>
-                    </Link>
-                  </Table.Cell>
-                </Table.Row>
-              </Table.Body>
-            ))}
+            {userCases.map(
+              (caseSubmitions) => (
+                console.log("case submitions", caseSubmitions),
+                (
+                  <Table.Body
+                    key={caseSubmitions._id}
+                    className="divide-y divide-gray-200 dark:divide-gray-700"
+                  >
+                    <Table.Row className="bg-white dark:border-gray-800 dark:bg-gray-800">
+                      <Table.Cell>
+                        {new Date(
+                          caseSubmitions.createdAt
+                        ).toLocaleDateString()}
+                      </Table.Cell>
+                      <Table.Cell>
+                        <Link
+                          to={`/case-submition-review/${caseSubmitions._id}`}
+                        >
+                          <img
+                            src={caseSubmitions.userId.profilePicture}
+                            alt={caseSubmitions.category}
+                            className="w-10 h-10 object-cover bg-gray-500 rounded-full"
+                          />
+                        </Link>
+                      </Table.Cell>
+                      <Table.Cell>
+                        <Link
+                          className="flex flex-col gap-1 font-medium text-gray-900 dark:text-white"
+                          to={`/case-submition-review/${caseSubmitions._id}`}
+                        >
+                          {caseSubmitions.userId.username}{" "}
+                          <span className="text-gray-300 dark:text-gray-400">
+                            {caseSubmitions.userId.email}
+                          </span>
+                        </Link>
+                      </Table.Cell>
+                      <Table.Cell>
+                        <Link
+                          to={`/case-submition-review/${caseSubmitions._id}`}
+                        >
+                          {caseSubmitions.category}
+                        </Link>
+                      </Table.Cell>
+                      <Table.Cell style={getStyle(caseSubmitions.state)}>
+                        {caseSubmitions.state}
+                      </Table.Cell>
+                    </Table.Row>
+                  </Table.Body>
+                )
+              )
+            )}
           </Table>
           {showMore && (
             <button
@@ -121,7 +131,7 @@ export default function DashCaseSubmitions() {
         </>
       ) : (
         <p className="p-5 text-3xl  font-bold text-center mt-23">
-          No Case Template Yet
+          No Case Submitions Yet
         </p>
       )}
     </div>

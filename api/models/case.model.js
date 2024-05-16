@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 // Define schema for the answer
-const AnswerSchema = new mongoose.Schema(
+const AnswerSchema = new Schema(
   {
     userId: {
       type: Schema.Types.ObjectId, // Use ObjectId type for referencing the User model
@@ -56,7 +56,7 @@ const AnswerSchema = new mongoose.Schema(
     },
     state: {
       type: String,
-      enum: ["pending", "approved", "denied"],
+      enum: ["pending", "Approved", "Rejected"],
       default: "pending",
     },
   },

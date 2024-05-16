@@ -47,10 +47,55 @@ export const getAllAnswers = async (req, res, next) => {
     const limit = parseInt(req.query.limit) || 9;
     const sortDirection = req.query.order === "asc" ? 1 : -1;
     // Fetch all answers from the database
+    const answers = await Answer.find({
+      ...(req.query.caseId && { _id: req.query.caseId }),
+    })
+      .populate({
+        path: "userId",
+        select: "username email profilePicture", // Populate only the username field
+      })
+      .sort({ updateAt: sortDirection })
+      .skip(startIndex)
+      .limit(limit);
+
+    const totalAnswers = await Answer.countDocuments();
+
+    const now = new Date();
+    const oneMonthAgo = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      now.getDate()
+    );
+
+    const lastMonthAnswers = await Answer.countDocuments({
+      createdAt: { $gte: oneMonthAgo },
+    });
+
+    res
+      .status(200)
+      .json({ success: true, answers, totalAnswers, lastMonthAnswers });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getAnswers = async (req, res, next) => {
+  try {
+    // Check if user is an admin
+    if (!req.user.isAdmin) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to access this resource",
+      });
+    }
+    const startIndex = parseInt(req.query.startIndex) || 0;
+    const limit = parseInt(req.query.limit) || 9;
+    const sortDirection = req.query.order === "asc" ? 1 : -1;
+    // Fetch all answers from the database
     const answers = await Answer.find()
       .populate({
         path: "userId",
-        select: "username", // Populate only the username field
+        select: "username email profilePicture", // Populate only the username field
       })
       .sort({ updateAt: sortDirection })
       .skip(startIndex)
