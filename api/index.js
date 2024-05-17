@@ -10,11 +10,22 @@ import cookieParser from "cookie-parser";
 dotenv.config();
 
 mongoose
-  .connect(process.env.MONGO)
+  .connect(process.env.MONGO, {
+    connectTimeoutMS: 30000, // Increase the connection timeout
+    serverSelectionTimeoutMS: 30000,
+  })
   .then(() => {
     console.log("Connected to MongoDB");
   })
   .catch((err) => console.log(err));
+
+mongoose.connection.on("error", (err) => {
+  console.log("Mongoose connection error:", err);
+});
+
+mongoose.connection.on("disconnected", () => {
+  console.log("Mongoose disconnected from DB");
+});
 
 const app = express();
 

@@ -89,7 +89,7 @@ export default function DashCasesTemplates() {
                     {new Date(caseTemplate.updatedAt).toLocaleDateString()}
                   </Table.Cell>
                   <Table.Cell>
-                    <Link to={`/case/${caseTemplate.slug}`}>
+                    <Link to={`/case-page/${caseTemplate.slug}`}>
                       <img
                         src={caseTemplate.image}
                         alt={caseTemplate.title}
@@ -100,7 +100,7 @@ export default function DashCasesTemplates() {
                   <Table.Cell>
                     <Link
                       className="font-medium text-gray-900 dark:text-white"
-                      to={`/case/${caseTemplate.slug}`}
+                      to={`/case-page/${caseTemplate.slug}`}
                     >
                       {caseTemplate.title}
                     </Link>

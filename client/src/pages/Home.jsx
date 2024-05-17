@@ -7,7 +7,7 @@ export default function Home() {
     <div>
       <Link to="/case-submition">
         <Button
-          className="mx-2 my-10 items-center justify-center"
+          className="mx-2 my-20 items-center justify-between"
           gradientDuoTone="purpleToBlue"
           outline
         >

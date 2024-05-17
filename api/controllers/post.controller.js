@@ -34,7 +34,7 @@ export const getcasetemplates = async (req, res, next) => {
     const cases = await Case.find({
       ...(req.query.userId && { userId: req.query.userId }),
       ...(req.query.category && { category: req.query.category }),
-      ...(req.query.slug && { category: req.query.slug }),
+      ...(req.query.slug && { slug: req.query.slug }),
       ...(req.query.caseId && { _id: req.query.caseId }),
       ...(req.query.searchTerm && {
         $or: [

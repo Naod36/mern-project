@@ -14,6 +14,7 @@ import CaseSubmition from "./pages/CaseSubmition";
 import UpdatePost from "./pages/UpdatePost";
 import UpdateMyCase from "./pages/UpdateMyCase";
 import CaseSubmitionReview from "./pages/CaseSubmitionReview";
+import CasePage from "./pages/CasePage";
 export default function App() {
   return (
     <BrowserRouter>
@@ -24,6 +25,8 @@ export default function App() {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/projects" element={<Projects />} />
+        <Route path="/case-page/:caseSlug" element={<CasePage />} />
+
         <Route path="/case-submition" element={<CaseSubmition />} />
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
