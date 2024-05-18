@@ -248,3 +248,34 @@ export const processAnswer = async (req, res, next) => {
     errorHandler(error, next);
   }
 };
+
+export const updatemycase = async (req, res, next) => {
+  if (!req.user.isAdmin && req.user.id !== req.params.userId) {
+    return next(
+      errorHandler(403, "You are not allowed to update this case template")
+    );
+  }
+  try {
+    const updateFields = req.body; // Get the fields to update from the request body
+
+    const updatedPost = await Answer.findByIdAndUpdate(
+      req.params.caseId,
+      { $set: updateFields },
+      { new: true }
+    );
+
+    if (!updatedPost) {
+      return next({
+        status: 404,
+        message: "Case not found",
+      });
+    }
+
+    res.status(200).json({
+      message: "Case has been updated",
+      data: updatedPost,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

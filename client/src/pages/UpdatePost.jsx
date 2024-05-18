@@ -118,6 +118,16 @@ export default function UpdatePost() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // if (!formData._id || !currentUser._id) {
+    //   setCreateTempError("Form data or user information is missing.");
+    //   console.log("Form data or user information is missing:", {
+    //     formData ,
+    //     currentUser,
+    //   });
+    //   return;
+    // }
+    console.log("Form data:", formData._id);
+    console.log("User ID:", currentUser._id);
     try {
       const res = await fetch(
         `/api/case/updatecasetemplate/${formData._id}/${currentUser._id}`,

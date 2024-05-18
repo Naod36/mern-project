@@ -3,6 +3,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -24,17 +25,21 @@ export default function CaseSubmitionReview() {
   const [state, setstate] = useState("pending"); // Default to 'approved'
   const [date, setDate] = useState(null);
   const [error, setError] = useState(null);
+  const { currentUser } = useSelector((state) => state.user);
 
-  const handleSubmit = async (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("/api/case/submit-answer", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const res = await fetch(
+        `/api/case/updatemycase/${formData._id}/${currentUser._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
       const data = await res.json();
       if (!res.ok) {
         setCreateTempError(data.message);
@@ -43,7 +48,7 @@ export default function CaseSubmitionReview() {
 
       if (res.ok) {
         setCreateTempError(null);
-        navigate(`/case/${data._id}`);
+        // navigate(`/case/${data.slug}`);
       }
     } catch (error) {
       setCreateTempError(error.message);
@@ -82,7 +87,7 @@ export default function CaseSubmitionReview() {
       </h1>
       <hr className="my-5 border border-gray-400 dark:border-gray-700" />
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleUpdate}>
         <h2 className="text-2xl mb-6 font-bold text-center">
           Your Information
         </h2>
@@ -93,8 +98,9 @@ export default function CaseSubmitionReview() {
               placeholder="Enter First Name"
               required
               id="firstName"
-              readOnly
-              style={{ pointerEvents: "none" }}
+              onChange={(e) =>
+                setFormData({ ...formData, firstName: e.target.value })
+              }
               value={formData.firstName}
             />
 
@@ -228,14 +234,13 @@ export default function CaseSubmitionReview() {
             {formData.state === "denied" && <h1>{formData.reason}</h1>}
           </div>
           {formData.state === "denied" && (
-            <Link to="/case-submitions">
-              <Button
-                className="mb-4 mx-auto  items-center justify-between"
-                gradientDuoTone="purpleToBlue"
-              >
-                Try Again
-              </Button>
-            </Link>
+            <Button
+              type="submit"
+              className="mb-4 mx-auto  items-center justify-between"
+              gradientDuoTone="purpleToBlue"
+            >
+              Update My Case
+            </Button>
           )}
           {createTempError && (
             <Alert className="mt-5" color="failure">

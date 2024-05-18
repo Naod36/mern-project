@@ -106,8 +106,19 @@ export const updatecasetemplate = async (req, res, next) => {
       },
       { new: true }
     );
-    res.status(200).json("Case Template has been updated");
+    if (!updatedPost) {
+      return next({
+        status: 404,
+        message: "Case template not found",
+      });
+    }
+
+    res.status(200).json({
+      message: "Case template has been updated",
+      data: updatedPost,
+    });
   } catch (error) {
+    console.error(error);
     next(error);
   }
 };
