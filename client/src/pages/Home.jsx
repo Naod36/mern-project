@@ -18,7 +18,7 @@ export default function Home() {
           voluptatum.
         </p>
         <Link
-          to="/cases"
+          to="/case-templates"
           className="text-xs sm:text-sm text-teal-500 font-bold hover:underline"
         >
           Viwe Case Templates

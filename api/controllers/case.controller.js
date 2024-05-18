@@ -258,6 +258,8 @@ export const updatemycase = async (req, res, next) => {
   try {
     const updateFields = req.body; // Get the fields to update from the request body
 
+    updateFields.state = "pending";
+
     const updatedPost = await Answer.findByIdAndUpdate(
       req.params.caseId,
       { $set: updateFields },
@@ -277,5 +279,16 @@ export const updatemycase = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
+  }
+};
+export const deletemycase = async (req, res, next) => {
+  if (!req.user.isAdmin && req.user.id !== req.params.userId) {
+    return next(errorHandler(403, "You are not allowed to delete this case"));
+  }
+  try {
+    await Answer.findByIdAndDelete(req.params.caseId);
+    res.status(200).json("Case has been deleted");
+  } catch (error) {
+    return next(error);
   }
 };

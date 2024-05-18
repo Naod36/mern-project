@@ -114,7 +114,7 @@ export default function CreateCaseTemp() {
 
       if (res.ok) {
         setCreateTempError(null);
-        navigate(`/case/${data._id}`);
+        navigate("/dashboard?tab=cases");
       }
     } catch (error) {
       setCreateTempError(error.message);
@@ -136,7 +136,7 @@ export default function CreateCaseTemp() {
       </h1>
       <hr className="my-5 border border-gray-400 dark:border-gray-700" />
 
-      <form onSubmit={handleSubmit}>
+      <form className="gap-4" onSubmit={handleSubmit}>
         <h2 className="text-2xl mb-6 font-bold text-center">
           Your Information
         </h2>
@@ -320,15 +320,15 @@ export default function CreateCaseTemp() {
             <Alert color="failure">{imageUploadingError}</Alert>
           )}
         </div>
-        <h2 className="my-5 text-xl">Write your case</h2>
-        <ReactQuill
-          theme="snow"
-          placeholder="Write something..."
-          className="mb-10 h-52 "
-          required
-          onChange={(value) => setFormData({ ...formData, details: value })}
-        />
-        <div className="flex flex-col mb-5">
+        <div className="flex flex-col gap-4">
+          <h2 className="my-5 text-xl">Write your case</h2>
+          <ReactQuill
+            theme="snow"
+            placeholder="Write something..."
+            className="mb-10 h-52 "
+            required
+            onChange={(value) => setFormData({ ...formData, details: value })}
+          />
           <Button type="submit" gradientDuoTone="purpleToBlue">
             Submit Case
           </Button>

@@ -124,7 +124,7 @@ export default function DashUsers() {
         </>
       ) : (
         <p className="p-5 text-3xl  font-bold text-center mt-23">
-          You have No Users Yet
+          No Users Yet
         </p>
       )}
       <Modal

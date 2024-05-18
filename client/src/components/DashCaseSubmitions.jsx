@@ -44,18 +44,18 @@ export default function DashCaseSubmitions() {
       console.log(error.message);
     }
   };
+
   const getStyle = (state) => {
     switch (state) {
-      case "Approved":
+      case "approved":
         return { color: "green", fontWeight: "bold" };
 
-      case "Rejected":
+      case "denied":
         return { color: "red", fontWeight: "bold" };
       default:
         return { color: "orange", fontWeight: "bold" };
     }
   };
-
   return (
     <div className="w-full overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
       {currentUser.isAdmin && userCases.length > 0 ? (

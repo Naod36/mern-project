@@ -51,18 +51,18 @@ export default function DashCases() {
       case "approved":
         return { color: "green", fontWeight: "bold" };
 
-      case "rejected":
+      case "denied":
         return { color: "red", fontWeight: "bold" };
       default:
         return { color: "orange", fontWeight: "bold" };
     }
   };
 
-  const handleDeleteCaseTemp = async () => {
+  const handleDeleteMyCase = async () => {
     setShowModal(false);
     try {
       const res = await fetch(
-        `/api/case/deletecasetemplate/${caseIdToDelete}/${currentUser._id}`,
+        `/api/case/deletemycase/${caseIdToDelete}/${currentUser._id}`,
         {
           method: "DELETE",
         }
@@ -85,13 +85,15 @@ export default function DashCases() {
         <>
           <Table hoverable className="shadow-md">
             <Table.Head>
+              <Table.HeadCell>Date Submited</Table.HeadCell>
               <Table.HeadCell>Date Updated</Table.HeadCell>
-              <Table.HeadCell>Case Image</Table.HeadCell>
-              <Table.HeadCell>Post Title</Table.HeadCell>
               <Table.HeadCell>Category</Table.HeadCell>
               <Table.HeadCell>Delete</Table.HeadCell>
               <Table.HeadCell>
-                <span>Edit</span>
+                <span>Status</span>
+              </Table.HeadCell>
+              <Table.HeadCell>
+                <span>{caseId}</span>
               </Table.HeadCell>
             </Table.Head>
             {userCases.map((caseTemplate) => (
@@ -101,24 +103,10 @@ export default function DashCases() {
               >
                 <Table.Row className="bg-white dark:border-gray-800 dark:bg-gray-800">
                   <Table.Cell>
+                    {new Date(caseTemplate.createdAt).toLocaleDateString()}
+                  </Table.Cell>
+                  <Table.Cell>
                     {new Date(caseTemplate.updatedAt).toLocaleDateString()}
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Link to={`/my-case-check/${caseTemplate._id}`}>
-                      <img
-                        src={caseTemplate.image}
-                        alt={caseTemplate.title}
-                        className="w-20 h-10 object-cover bg-gray-500"
-                      />
-                    </Link>
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Link
-                      className="font-medium text-gray-900 dark:text-white"
-                      to={`/case/${caseTemplate.slug}`}
-                    >
-                      {caseTemplate.title}
-                    </Link>
                   </Table.Cell>
                   <Table.Cell>{caseTemplate.category}</Table.Cell>
                   <Table.Cell>
@@ -135,6 +123,14 @@ export default function DashCases() {
                   <Table.Cell style={getStyle(caseTemplate.state)}>
                     {caseTemplate.state}
                   </Table.Cell>
+                  <Table.Cell>
+                    <Link
+                      className="text-teal-500 hover:underline"
+                      to={`/my-case-check/${caseTemplate._id}`}
+                    >
+                      <span>View</span>
+                    </Link>
+                  </Table.Cell>
                 </Table.Row>
               </Table.Body>
             ))}
@@ -150,7 +146,7 @@ export default function DashCases() {
         </>
       ) : (
         <p className="p-5 text-3xl  font-bold text-center mt-23">
-          No Case Template Yet
+          No Cases Yet
         </p>
       )}
       <Modal
@@ -164,10 +160,10 @@ export default function DashCases() {
           <div className="text-center">
             <HiOutlineExclamation className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
             <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-              Are you sure you want to delete this Case Template?
+              Are you sure you want to delete this Submited Case?
             </h3>
             <div className="flex justify-center gap-4">
-              <Button color="failure" onClick={handleDeleteCaseTemp}>
+              <Button color="failure" onClick={handleDeleteMyCase}>
                 Yes, Im Sure
               </Button>
               <Button onClick={() => setShowModal(false)} color="gray">

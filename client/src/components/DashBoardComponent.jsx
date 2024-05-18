@@ -50,10 +50,38 @@ export default function DashBoardComponent() {
       fetchCases();
     }
   }, [currentUser]);
+  const getStyle = (state) => {
+    switch (state) {
+      case "approved":
+        return { color: "green", fontWeight: "bold" };
 
+      case "denied":
+        return { color: "red", fontWeight: "bold" };
+      default:
+        return { color: "orange", fontWeight: "bold" };
+    }
+  };
   return (
-    <div className="p-3 md:mx-100%">
-      <div className="flex-wrap flex gap-4 justify-between">
+    <div className="p-3 md:mx-full">
+      <div className="flex-wrap flex gap-3 ">
+        <div className="flex flex-col p-3 dark:bg-slate-800 gap-4 md:w-60 w-full rounded-md shadow-md dark:text-white">
+          <div className="flex  justify-between">
+            <div className="">
+              <h3 className="text-gray-500 text-md mx-10 my-5 text-center font-bold uppercase">
+                Admin Dashboard
+              </h3>
+              {/* <p className="text-2xl">{totalCases}</p> */}
+            </div>
+            {/* <HiOutlineUserGroup className="bg-teal-600 text-white  rounded-full text-5xl p-3 shadow-lg" /> */}
+          </div>
+          <div className="flex gap-2 text-sm">
+            {/* <span className="text-green-500 flex items-center">
+              <HiArrowNarrowUp />
+              <p>{lastMonthCases}</p>
+            </span> */}
+            <div className="text-gray-500"></div>
+          </div>
+        </div>
         <div className="flex flex-col p-3 dark:bg-slate-800 gap-4 md:w-80 w-full rounded-md shadow-md dark:text-white">
           <div className="flex  justify-between">
             <div className="">
@@ -77,22 +105,6 @@ export default function DashBoardComponent() {
               <p className="text-2xl">{totalCases}</p>
             </div>
             <HiDocumentText className="bg-teal-600 text-white  rounded-full text-5xl p-3 shadow-lg" />
-          </div>
-          <div className="flex gap-2 text-sm">
-            <span className="text-green-500 flex items-center">
-              <HiArrowNarrowUp />
-              <p>{lastMonthCases}</p>
-            </span>
-            <div className="text-gray-500">Last Monthe</div>
-          </div>
-        </div>
-        <div className="flex flex-col p-3 dark:bg-slate-800 gap-4 md:w-80 w-full rounded-md shadow-md dark:text-white">
-          <div className="flex  justify-between">
-            <div className="">
-              <h3 className="text-gray-500 text-md uppercase">Total Cases</h3>
-              <p className="text-2xl">{totalCases}</p>
-            </div>
-            <HiOutlineUserGroup className="bg-teal-600 text-white  rounded-full text-5xl p-3 shadow-lg" />
           </div>
           <div className="flex gap-2 text-sm">
             <span className="text-green-500 flex items-center">
@@ -139,7 +151,10 @@ export default function DashBoardComponent() {
                       </Link>
                     </Table.Cell>
 
-                    <Table.Cell className="">
+                    <Table.Cell
+                      style={getStyle(caseSubmitions.state)}
+                      className=""
+                    >
                       <Link to={`/case-submition-review/${caseSubmitions._id}`}>
                         {caseSubmitions.state}
                       </Link>
@@ -172,7 +187,12 @@ export default function DashBoardComponent() {
                         className="w-10 h-10 rounded-full bg-gray-500"
                       />
                     </Table.Cell>
-                    <Table.Cell className="">{user.username}</Table.Cell>
+                    <Table.Cell className="flex flex-col gap-1 font-medium text-gray-900 dark:text-white">
+                      {user.username}
+                      <span className="text-gray-300 dark:text-gray-400">
+                        {user.email}
+                      </span>
+                    </Table.Cell>
                   </Table.Row>
                 </Table.Body>
               ))}

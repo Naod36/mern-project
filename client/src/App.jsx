@@ -25,7 +25,7 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/projects" element={<Projects />} />
+        <Route path="/case-templates" element={<Projects />} />
         <Route path="/case-page/:caseSlug" element={<CasePage />} />
 
         <Route path="/case-submitions" element={<CaseSubmition />} />

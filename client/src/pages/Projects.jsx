@@ -19,14 +19,14 @@ export default function Projects() {
   return (
     <div>
       <div>
-        <div className="flex flex-col gap-6 px-3 max-w-6xl mx-auto p-28">
+        {/* <div className="flex flex-col gap-6 px-3 max-w-6xl mx-auto p-28">
           <h1 className="text-3xl font-bold lg:text-6xl">Welcome To CCFC</h1>
           <p className="text-gray-500 text-xs sm:text-sm">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint harum
             accusantium assumenda velit illum omnis dolor nihil officiis atque
             voluptatum.
           </p>
-        </div>
+        </div> */}
       </div>
       <div className="mx-w-6xl mx-auto p-3 flex flex-col gap-6 py-7">
         {cases && cases.length > 0 && (

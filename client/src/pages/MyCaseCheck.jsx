@@ -37,7 +37,7 @@ export default function CaseSubmitionReview() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(formData, state),
         }
       );
       const data = await res.json();
@@ -48,8 +48,10 @@ export default function CaseSubmitionReview() {
 
       if (res.ok) {
         setCreateTempError(null);
-        // navigate(`/case/${data.slug}`);
+        setstate("pending");
+        navigate("/dashboard?tab=cases");
       }
+      console.log(state);
     } catch (error) {
       setCreateTempError(error.message);
     }
@@ -79,6 +81,18 @@ export default function CaseSubmitionReview() {
   console.log(formData.state);
   console.log(formData.date);
   console.log(formData.reason);
+
+  const getStyle = (state) => {
+    switch (state) {
+      case "approved":
+        return { color: "green", fontWeight: "bold" };
+
+      case "denied":
+        return { color: "red", fontWeight: "bold" };
+      default:
+        return { color: "orange", fontWeight: "bold" };
+    }
+  };
 
   return (
     <div className="p-3 max-w-3xl mx-auto min-h-screen">
@@ -206,48 +220,88 @@ export default function CaseSubmitionReview() {
             )}
           </div>
         </div>
-        <h2 className="my-5 text-xl">Write your case</h2>
-        <ReactQuill
-          theme="snow"
-          placeholder="Write something..."
-          className="mb-10 h-52 "
-          required
-          onChange={(value) => setFormData({ ...formData, details: value })}
-          value={formData.details}
-        />
-        <div className="flex flex-col mb-5 gap-4">
-          <div className="flex flex-row gap-4">
-            <h1>{formData.state}</h1>
-            {formData.state === "approved" && (
-              <h1>{new Date(formData.date).toLocaleDateString()}</h1>
+        <div className="flex flex-col">
+          <h2 className="my-5 text-xl">Write your case</h2>
+          <ReactQuill
+            theme="snow"
+            placeholder="Write something..."
+            className="mb-10 h-52 "
+            required
+            onChange={(value) => setFormData({ ...formData, details: value })}
+            value={formData.details}
+          />
+        </div>
+        <div className="flex flex-col my-10 gap-4 p-5 dark:bg-slate-800   rounded-md shadow-md">
+          <h1 className="text-xl text-center justify-between">
+            Case Information
+          </h1>
+          <h1 className="ml-10 mt-2 flex items-center text-2xl font-extrabold dark:text-white">
+            Status
+            {formData.state === "pending" && (
+              <span className="shadow-md bg-amber-300 text-slate-900 text-2xl font-semibold me-2 px-2.5 py-0.5 rounded dark:bg-amber-300 dark:text-slate-800 ms-2">
+                Pending
+              </span>
             )}
-            {/* <TextInput
-              type="text"
-              placeholder="Enter Reason"
-              required
-              id="reason"
-              value={formData.reason}
-              onChange={(e) =>
-                setFormData({ ...formData, reason: e.target.value })
-              }
-            /> */}
-            {formData.state === "denied" && <h1>{formData.reason}</h1>}
-          </div>
-          {formData.state === "denied" && (
-            <Button
-              type="submit"
-              className="mb-4 mx-auto  items-center justify-between"
-              gradientDuoTone="purpleToBlue"
-            >
-              Update My Case
-            </Button>
+            {formData.state === "approved" && (
+              <span className="shadow-md bg-lime-500 text-slate-900 text-2xl font-semibold me-2 px-2.5 py-0.5 rounded dark:bg-lime-500 dark:text-slate-800 ms-2">
+                Approved
+              </span>
+            )}
+            {formData.state === "denied" && (
+              <span className="shadow-md bg-red-600 text-slate-100 text-2xl font-semibold me-2 px-2.5 py-0.5 rounded dark:bg-red-600 dark:text-slate-200 ms-2">
+                Denied
+              </span>
+            )}
+          </h1>
+          {formData.state === "approved" && (
+            <h1 className="ml-10 mt-2 flex items-center text-xl font-extrabold dark:text-white">
+              Date :
+              <span className="shadow-md bg-inherit text-slate-900 text-xl font-semibold me-2 px-2.5 py-0.5 rounded dark:bg-inherit dark:text-slate-200 ms-2">
+                {new Date(formData.date).toLocaleDateString()}
+              </span>
+            </h1>
           )}
-          {createTempError && (
-            <Alert className="mt-5" color="failure">
-              {createTempError}
-            </Alert>
+          {formData.state === "approved" && (
+            <h1 className="ml-10 mt-2 flex items-center text-xl font-extrabold dark:text-white">
+              Time :
+              <span className="shadow-md bg-inherit text-slate-900 text-xl font-semibold me-2 px-2.5 py-0.5 rounded dark:bg-inherit dark:text-slate-200 ms-2">
+                {new Date(formData.date).toLocaleTimeString()}
+              </span>
+            </h1>
+          )}
+          {formData.state === "approved" && (
+            <h1 className="text-lime-500 ml-10">
+              Please Araive to court on the date and time stated above
+            </h1>
+          )}
+          {formData.state === "denied" && (
+            <h1 className="ml-10 mt-2 flex items-center text-xl font-extrabold dark:text-white">
+              Reason :
+              <span className="shadow-md bg-inherit text-slate-900 text-xl font-semibold me-2 px-2.5 py-0.5 rounded dark:bg-inherit dark:text-slate-200 ms-2">
+                {formData.reason}
+              </span>
+            </h1>
+          )}
+          {formData.state === "denied" && (
+            <h1 className="text-red-500 ml-10">
+              review for the reason stated and try again
+            </h1>
           )}
         </div>
+        {formData.state === "denied" && (
+          <Button
+            type="submit"
+            className="mb-4 mx-auto  items-center justify-between"
+            gradientDuoTone="purpleToBlue"
+          >
+            Update My Case
+          </Button>
+        )}
+        {createTempError && (
+          <Alert className="mt-5" color="failure">
+            {createTempError}
+          </Alert>
+        )}
         {error && <Alert color="failure">{error}</Alert>}
       </form>
     </div>

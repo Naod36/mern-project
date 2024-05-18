@@ -58,19 +58,14 @@ export default function SignUp() {
         <div className="flex-1">
           <Link
             to="/"
-            className="m-3 self-center flex font-semibold dark:text-white text-4xl"
+            className="m-3 self-center flex font-semibold dark:text-white text-6xl"
           >
-            <span className=" text-black  self-center whitespace-nowrap text-xl font-semibold dark:text-wight">
+            <span className="  self-center whitespace-nowrap text-xl font-semibold">
               <img src={logo} className="mr-3 h-12 sm:h-14 " alt="Logo" />
             </span>
-            Court
+            CCFS
           </Link>
-          <p className="text-sm mt-5">
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Explicabo
-            totam sapiente tempora, cupiditate molestiae suscipit, voluptatem
-            sint odio eaque, at excepturi rem officia velit et nemo laborum
-            ratione enim maiores!
-          </p>
+          <p className="text-md ml-10 mt-5">Court Case Filing System</p>
         </div>
         {/*right*/}
         <div className="flex-1">
