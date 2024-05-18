@@ -14,7 +14,7 @@ const router = express.Router();
 router.post("/submit-answer", verifyToken, submitAnswer);
 
 router.get("/getAllAnswers", verifyToken, getAllAnswers);
-router.get("/getAnswers", getAnswers);
+router.get("/getAnswers", verifyToken, getAnswers);
 
 router.get("/my-cases", verifyToken, myCases);
 // Endpoint for admin approval/denial

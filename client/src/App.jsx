@@ -15,6 +15,7 @@ import UpdatePost from "./pages/UpdatePost";
 import UpdateMyCase from "./pages/UpdateMyCase";
 import CaseSubmitionReview from "./pages/CaseSubmitionReview";
 import CasePage from "./pages/CasePage";
+import MyCaseCheck from "./pages/MyCaseCheck";
 export default function App() {
   return (
     <BrowserRouter>
@@ -27,14 +28,16 @@ export default function App() {
         <Route path="/projects" element={<Projects />} />
         <Route path="/case-page/:caseSlug" element={<CasePage />} />
 
-        <Route path="/case-submition" element={<CaseSubmition />} />
+        <Route path="/case-submitions" element={<CaseSubmition />} />
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/update-my-case/:caseId" element={<UpdateMyCase />} />
+          <Route path="/my-case-check/:caseId" element={<MyCaseCheck />} />
         </Route>
         <Route element={<OnlyAdminPrivateRoute />}>
           <Route path="/create-case-template" element={<CreateCaseTemp />} />
           <Route path="/update-post/:caseId" element={<UpdatePost />} />
+
           <Route
             path="/case-submition-review/:caseId"
             element={<CaseSubmitionReview />}

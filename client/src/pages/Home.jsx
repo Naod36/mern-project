@@ -5,7 +5,7 @@ import { Button } from "flowbite-react";
 export default function Home() {
   return (
     <div>
-      <Link to="/case-submition">
+      <Link to="/case-submitions">
         <Button
           className="mx-2 my-20 items-center justify-between"
           gradientDuoTone="purpleToBlue"
