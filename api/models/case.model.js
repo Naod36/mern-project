@@ -58,6 +58,10 @@ const AnswerSchema = new Schema(
       enum: ["pending", "approved", "denied"],
       default: "pending",
     },
+    reason: {
+      type: String,
+      default: "Not Provided",
+    },
   },
   { timestamps: true }
 );

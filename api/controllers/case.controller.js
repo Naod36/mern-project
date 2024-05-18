@@ -119,49 +119,52 @@ export const getAnswers = async (req, res, next) => {
 };
 
 // Controller for handling admin approval/denial
-export const processnswer = async (req, res, next) => {
-  try {
-    // Check if user is an admin
-    if (!req.user.isAdmin) {
-      return res.status(403).json({
-        success: false,
-        message: "You are not authorized to perform this action",
-      });
-    }
+// export const processnswer = async (req, res, next) => {
+//   try {
+//     // Check if user is an admin
+//     if (!req.user.isAdmin) {
+//       return res.status(403).json({
+//         success: false,
+//         message: "You are not authorized to perform this action",
+//       });
+//     }
 
-    // Extract data from request body
-    const { answerId, action, date } = req.body;
+//     // Extract data from request body
+//     const { answerId, action, date } = req.body;
 
-    // Find the answer by ID
-    const foundAnswer = await Answer.findById(answerId);
-    if (!foundAnswer) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Answer not found" });
-    }
+//     // Find the answer by ID
+//     const foundAnswer = await Answer.findById(answerId);
+//     if (!foundAnswer) {
+//       return res
+//         .status(404)
+//         .json({ success: false, message: "Answer not found" });
+//     }
 
-    // Update state and date if action is "approved"
-    if (action === "approved") {
-      foundAnswer.state = "approved";
-      foundAnswer.date = date; // Set the approved date provided by the admin
-    } else if (action === "denied") {
-      foundAnswer.state = "denied";
-    } else {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid action" });
-    }
+//     // Update state and date if action is "approved"
+//     if (state === "approved") {
+//       foundAnswer.state = "approved";
+//       foundAnswer.date = date; // Set the approved date provided by the admin
+//     } else if (state === "approved") {
+//       foundAnswer.state = "approved";
+//       foundAnswer.date = date;
+//     } else {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "Invalid action" });
+//     }
 
-    // Save the updated answer to the database
-    await foundAnswer.save();
+//     // Save the updated answer to the database
+//     await foundAnswer.save();
 
-    res
-      .status(200)
-      .json({ success: true, message: "Answer processed successfully" });
-  } catch (error) {
-    errorHandler(error, next);
-  }
-};
+//     res.status(200).json({
+//       success: true,
+//       message: "Answer processed successfully",
+//       data: reason,
+//     });
+//   } catch (error) {
+//     errorHandler(error, next);
+//   }
+// };
 
 export const myCases = async (req, res, next) => {
   try {
@@ -201,24 +204,47 @@ export const myCases = async (req, res, next) => {
   }
 };
 export const processAnswer = async (req, res, next) => {
-  if (!req.user.isAdmin) {
-    return next(
-      errorHandler(403, "You are not allowed to update this case template")
-    );
-  }
   try {
-    const updatedPost = await Answer.findByIdAndUpdate(
-      req.params.caseId,
-      {
-        $set: {
-          date: req.body.date,
-          state: req.body.state,
-        },
-      },
-      { new: true }
-    );
-    res.status(200).json(updatedPost);
+    // Check if user is an admin
+    if (!req.user.isAdmin) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to perform this action",
+      });
+    }
+
+    // Extract data from request body
+    const { answerId, state, date, reason } = req.body;
+
+    // Find the answer by ID
+    const foundAnswer = await Answer.findById(answerId);
+    if (!foundAnswer) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Answer not found" });
+    }
+
+    // Update state and date or reason based on action
+    if (state === "approved") {
+      foundAnswer.state = "approved";
+      foundAnswer.date = date; // Set the approved date provided by the admin
+    } else if (state === "denied") {
+      foundAnswer.state = "denied";
+      foundAnswer.reason = reason; // Set the denial reason provided by the admin
+    } else {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid action" });
+    }
+
+    // Save the updated answer to the database
+    await foundAnswer.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Answer processed successfully",
+    });
   } catch (error) {
-    next(error);
+    errorHandler(error, next);
   }
 };

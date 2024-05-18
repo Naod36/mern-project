@@ -60,7 +60,7 @@ export default function CasePage() {
       <h2 className="my-5 mx-auto  items-center">
         To Proceed with filing a divorce case click the below button
       </h2>
-      <Link to="/case-submition">
+      <Link to="/case-submitions">
         <Button
           className="mb-4 mx-auto  items-center justify-between"
           gradientDuoTone="purpleToBlue"

@@ -4,18 +4,23 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-// import ReactQuill from "react-quill";
-// import "react-quill/dist/quill.snow.css";
-// import {
-//   getDownloadURL,
-//   getStorage,
-//   ref,
-//   uploadBytesResumable,
-// } from "firebase/storage";
-// import { app } from "../firebase";
-// import "react-circular-progressbar/dist/styles.css";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { app } from "../firebase";
+import "react-circular-progressbar/dist/styles.css";
 export default function CaseSubmitionReview() {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    reason: "",
+    date: "",
+    state: "",
+    // other fields if any
+  });
   const [createTempError, setCreateTempError] = useState(null);
   const { caseId } = useParams();
 
@@ -23,19 +28,42 @@ export default function CaseSubmitionReview() {
 
   const [state, setstate] = useState("pending"); // Default to 'approved'
   const [date, setDate] = useState(null);
+  const [reason, setReason] = useState(null);
+
   const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
+    const finalFormData = { ...formData };
+
+    if (finalFormData.state === "approved" && !finalFormData.date) {
+      setError("Please select a date.");
+      return;
+    }
+
+    if (finalFormData.state === "denied" && !finalFormData.reason) {
+      setError("Please enter a reason.");
+      return;
+    }
+
+    // Only include the relevant field
+    const payload = {
+      answerId: caseId,
+      state: finalFormData.state,
+      ...(finalFormData.state === "approved" && { date: finalFormData.date }),
+      ...(finalFormData.state === "denied" && { reason: finalFormData.reason }),
+    };
+
+    console.log(payload);
     try {
       const res = await fetch(`/api/case/process-answer/${caseId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...formData, date, state }),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -43,16 +71,8 @@ export default function CaseSubmitionReview() {
         return;
       }
 
-      if (state === "approved" && !date) {
-        setError("Please select a date.");
-        console.log(state);
-        return;
-      }
-      if (res.ok) {
-        setCreateTempError(null);
-        // navigate(`/case/${data.slug}`);
-        // Validate date format if action is 'approved'
-      }
+      setCreateTempError(null);
+      // navigate(`/case/${data.slug}`);
     } catch (error) {
       setError("An error occurred while processing the answer.");
     }
@@ -204,22 +224,23 @@ export default function CaseSubmitionReview() {
             )}
           </div>
         </div>
-        {/* <h2 className="my-5 text-xl">Write your case</h2>
+        <h2 className="my-5 text-xl">Write your case</h2>
         <ReactQuill
           theme="snow"
           placeholder="Write something..."
           className="mb-10 h-52 "
           required
           onChange={(value) => setFormData({ ...formData, details: value })}
-        /> */}
+          value={formData.details}
+        />
         <div className="flex flex-col mb-5 gap-4">
           <div className="flex flex-row gap-4">
             <label>
               <input
                 type="radio"
                 value="approved"
-                checked={state === "approved"}
-                onChange={() => setstate("approved")}
+                checked={formData.state === "approved"}
+                onChange={() => setFormData({ ...formData, state: "approved" })}
               />
               Approve
             </label>
@@ -227,21 +248,36 @@ export default function CaseSubmitionReview() {
               <input
                 type="radio"
                 value="denied"
-                checked={state === "denied"}
-                onChange={() => setstate("denied")}
+                checked={formData.state === "denied"}
+                onChange={() => setFormData({ ...formData, state: "denied" })}
               />
               Deny
             </label>
           </div>
-          {state === "approved" && (
+          {formData.state === "approved" && (
             <DatePicker
-              selected={date}
-              onChange={(date) => setDate(date)}
+              selected={formData.date ? new Date(formData.date) : null}
+              onChange={(date) => setFormData({ ...formData, date })}
               dateFormat="yyyy-MM-dd"
               showTimeSelect
               timeIntervals={30}
-              timeFormat="hh:mm"
-              className="p-2 border rounded text-red-500 "
+              timeFormat="HH:mm"
+              className="p-2 border rounded text-red-500"
+            />
+          )}
+          {formData.state === "denied" && (
+            <TextInput
+              type="text"
+              placeholder="Enter Reason"
+              required
+              id="reason"
+              value={formData.reason}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  reason: e.target.value,
+                })
+              }
             />
           )}
           <Button type="submit" gradientDuoTone="purpleToBlue">

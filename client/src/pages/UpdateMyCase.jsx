@@ -4,16 +4,16 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-// import ReactQuill from "react-quill";
-// import "react-quill/dist/quill.snow.css";
-// import {
-//   getDownloadURL,
-//   getStorage,
-//   ref,
-//   uploadBytesResumable,
-// } from "firebase/storage";
-// import { app } from "../firebase";
-// import "react-circular-progressbar/dist/styles.css";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { app } from "../firebase";
+import "react-circular-progressbar/dist/styles.css";
 export default function UpdateMyCase() {
   const [formData, setFormData] = useState({});
   const [createTempError, setCreateTempError] = useState(null);
@@ -204,14 +204,14 @@ export default function UpdateMyCase() {
             )}
           </div>
         </div>
-        {/* <h2 className="my-5 text-xl">Write your case</h2>
+        <h2 className="my-5 text-xl">Write your case</h2>
         <ReactQuill
           theme="snow"
           placeholder="Write something..."
           className="mb-10 h-52 "
           required
           onChange={(value) => setFormData({ ...formData, details: value })}
-        /> */}
+        />
         <div className="flex flex-col mb-5 gap-4">
           <div className="flex flex-row gap-4">
             <label>

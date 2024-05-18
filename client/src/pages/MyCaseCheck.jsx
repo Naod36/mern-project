@@ -2,18 +2,18 @@ import { FileInput, Select, TextInput, Button, Alert } from "flowbite-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 
-// import ReactQuill from "react-quill";
-// import "react-quill/dist/quill.snow.css";
-// import {
-//   getDownloadURL,
-//   getStorage,
-//   ref,
-//   uploadBytesResumable,
-// } from "firebase/storage";
-// import { app } from "../firebase";
-// import "react-circular-progressbar/dist/styles.css";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { app } from "../firebase";
+import "react-circular-progressbar/dist/styles.css";
 export default function CaseSubmitionReview() {
   const [formData, setFormData] = useState({});
   const [createTempError, setCreateTempError] = useState(null);
@@ -27,15 +27,13 @@ export default function CaseSubmitionReview() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
-
     try {
-      const res = await fetch(`/api/case/process-answer/${caseId}`, {
-        method: "PUT",
+      const res = await fetch("/api/case/submit-answer", {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...formData, date, state }),
+        body: JSON.stringify(formData),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -43,18 +41,12 @@ export default function CaseSubmitionReview() {
         return;
       }
 
-      if (state === "approved" && !date) {
-        setError("Please select a date.");
-        console.log(state);
-        return;
-      }
       if (res.ok) {
         setCreateTempError(null);
-        // navigate(`/case/${data.slug}`);
-        // Validate date format if action is 'approved'
+        navigate(`/case/${data._id}`);
       }
     } catch (error) {
-      setError("An error occurred while processing the answer.");
+      setCreateTempError(error.message);
     }
   };
 
@@ -71,6 +63,7 @@ export default function CaseSubmitionReview() {
         if (res.ok) {
           setFormData(data.answers[0]);
           setCreateTempError(null);
+          console.log(data.answers[0]);
         }
       } catch (error) {
         console.log(error.message);
@@ -78,6 +71,9 @@ export default function CaseSubmitionReview() {
     };
     fetchCaseSubmition();
   }, [caseId]);
+  console.log(formData.state);
+  console.log(formData.date);
+  console.log(formData.reason);
 
   return (
     <div className="p-3 max-w-3xl mx-auto min-h-screen">
@@ -204,49 +200,43 @@ export default function CaseSubmitionReview() {
             )}
           </div>
         </div>
-        {/* <h2 className="my-5 text-xl">Write your case</h2>
+        <h2 className="my-5 text-xl">Write your case</h2>
         <ReactQuill
           theme="snow"
           placeholder="Write something..."
           className="mb-10 h-52 "
           required
           onChange={(value) => setFormData({ ...formData, details: value })}
-        /> */}
+          value={formData.details}
+        />
         <div className="flex flex-col mb-5 gap-4">
           <div className="flex flex-row gap-4">
-            <label>
-              <input
-                type="radio"
-                value="approved"
-                checked={state === "approved"}
-                onChange={() => setstate("approved")}
-              />
-              Approve
-            </label>
-            <label>
-              <input
-                type="radio"
-                value="denied"
-                checked={state === "denied"}
-                onChange={() => setstate("denied")}
-              />
-              Deny
-            </label>
+            <h1>{formData.state}</h1>
+            {formData.state === "approved" && (
+              <h1>{new Date(formData.date).toLocaleDateString()}</h1>
+            )}
+            {/* <TextInput
+              type="text"
+              placeholder="Enter Reason"
+              required
+              id="reason"
+              value={formData.reason}
+              onChange={(e) =>
+                setFormData({ ...formData, reason: e.target.value })
+              }
+            /> */}
+            {formData.state === "denied" && <h1>{formData.reason}</h1>}
           </div>
-          {state === "approved" && (
-            <DatePicker
-              selected={date}
-              onChange={(date) => setDate(date)}
-              dateFormat="yyyy-MM-dd"
-              showTimeSelect
-              timeIntervals={30}
-              timeFormat="hh:mm"
-              className="p-2 border rounded text-red-500 "
-            />
+          {formData.state === "denied" && (
+            <Link to="/case-submitions">
+              <Button
+                className="mb-4 mx-auto  items-center justify-between"
+                gradientDuoTone="purpleToBlue"
+              >
+                Try Again
+              </Button>
+            </Link>
           )}
-          <Button type="submit" gradientDuoTone="purpleToBlue">
-            Submit Case
-          </Button>
           {createTempError && (
             <Alert className="mt-5" color="failure">
               {createTempError}

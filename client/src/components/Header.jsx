@@ -48,14 +48,14 @@ export default function Header() {
           </div>
         </div>
       </Link>
-      <form>
+      {/* <form>
         <TextInput
           type="text"
           placeholder="Search..."
           rightIcon={AiOutlineSearch}
           className="hidden lg:inline"
         />
-      </form>
+      </form> */}
 
       <Button className="w-12 h-8 lg:hidden" color="gray" pill>
         <AiOutlineSearch />
