@@ -14,8 +14,14 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
+import { CircularProgressbar } from "react-circular-progressbar";
+
 import "react-circular-progressbar/dist/styles.css";
 export default function CaseSubmitionReview() {
+  const [file, setFile] = useState(null);
+  const [file2, setFile2] = useState(null);
+  const [imageUploadingProgress, setImageUploadingProgress] = useState(null);
+  const [imageUploadingError, setImageUploadingError] = useState(null);
   const [formData, setFormData] = useState({});
   const [createTempError, setCreateTempError] = useState(null);
   const { caseId } = useParams();
@@ -93,12 +99,89 @@ export default function CaseSubmitionReview() {
         return { color: "orange", fontWeight: "bold" };
     }
   };
-
+  const handleUploadImage = async () => {
+    try {
+      if (!file) {
+        setImageUploadingError("Please select an image file");
+        return;
+      }
+      setImageUploadingError(null);
+      const storage = getStorage(app);
+      const fileName = new Date().getTime() + "-" + file.name;
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setImageUploadingProgress(progress.toFixed(0));
+        },
+        (error) => {
+          setImageUploadingError("Image uploading failed.");
+          setImageUploadingProgress(null);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            setImageUploadingProgress(null);
+            setImageUploadingError(null);
+            setFormData({ ...formData, image1: downloadURL });
+          });
+        }
+      );
+    } catch (error) {
+      setImageUploadingError("Image upload failed.");
+      setImageUploadingProgress(null);
+      console.log(error);
+    }
+  };
+  const handleUploadImage2 = async () => {
+    try {
+      if (!file2) {
+        setImageUploadingError("Please select an image file");
+        return;
+      }
+      setImageUploadingError(null);
+      const storage = getStorage(app);
+      const fileName = new Date().getTime() + "-" + file2.name;
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, file2);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setImageUploadingProgress(progress.toFixed(0));
+        },
+        (error) => {
+          setImageUploadingError("Image uploading failed.");
+          setImageUploadingProgress(null);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            setImageUploadingProgress(null);
+            setImageUploadingError(null);
+            setFormData({ ...formData, image2: downloadURL });
+          });
+        }
+      );
+    } catch (error) {
+      setImageUploadingError("Image upload failed.");
+      setImageUploadingProgress(null);
+      console.log(error);
+    }
+  };
+  const handleImageChange = (e) => {
+    e.preventDefault();
+    setFormData({ ...formData, image1: null });
+  };
+  const handleImageChange2 = (e) => {
+    e.preventDefault();
+    setFormData({ ...formData, image2: null });
+  };
   return (
     <div className="p-3 max-w-3xl mx-auto min-h-screen">
-      <h1 className=" p-5 my-5 text-3xl text-center font-bold">
-        Divorce Case Submition
-      </h1>
+      <h1 className=" p-5 my-5 text-3xl text-center font-bold">My Case</h1>
       <hr className="my-5 border border-gray-400 dark:border-gray-700" />
 
       <form onSubmit={handleUpdate}>
@@ -123,8 +206,12 @@ export default function CaseSubmitionReview() {
               placeholder="Enter Middle Name"
               required
               id="middleName"
-              readOnly
-              style={{ pointerEvents: "none" }}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  middleName: e.target.value,
+                })
+              }
               value={formData.middleName}
             />
 
@@ -133,8 +220,12 @@ export default function CaseSubmitionReview() {
               placeholder="Enter Last Name"
               required
               id="lastName"
-              readOnly
-              style={{ pointerEvents: "none" }}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  lastName: e.target.value,
+                })
+              }
               value={formData.lastName}
             />
           </div>
@@ -147,19 +238,46 @@ export default function CaseSubmitionReview() {
                   alt="uploaded image"
                   className="w-full h-72 object-cover"
                 />
+                <Button
+                  type="button"
+                  color="dark"
+                  size="sm"
+                  onClick={handleImageChange}
+                >
+                  Change Image
+                </Button>
               </div>
             ) : (
               <>
                 <FileInput
                   type="file"
                   accept="image/*"
-                  onChange={(e) =>
-                    setFormData({ ...formData, image1: e.target.files[0] })
-                  }
+                  onChange={(e) => setFile(e.target.files[0])}
                 />
+                <Button
+                  type="button"
+                  color="dark"
+                  size="sm"
+                  onClick={handleUploadImage}
+                  disabled={imageUploadingProgress !== null}
+                >
+                  {imageUploadingProgress ? (
+                    <div className="w-16 h-16">
+                      <CircularProgressbar
+                        value={imageUploadingProgress}
+                        text={`${imageUploadingProgress || 0}%`}
+                      />
+                    </div>
+                  ) : (
+                    "Upload Image"
+                  )}
+                </Button>
               </>
             )}
           </div>
+          {imageUploadingError && (
+            <Alert color="failure">{imageUploadingError}</Alert>
+          )}
         </div>
         <h2 className="text-2xl mb-6 font-bold text-center">
           <hr className="my-5 mt-10 border border-gray-400 dark:border-gray-700" />
@@ -171,9 +289,9 @@ export default function CaseSubmitionReview() {
               type="text"
               placeholder="Enter First Name"
               required
-              id="spouseFirstName"
-              readOnly
-              style={{ pointerEvents: "none" }}
+              onChange={(e) =>
+                setFormData({ ...formData, spouseFirstName: e.target.value })
+              }
               value={formData.spouseFirstName}
             />
 
@@ -182,8 +300,12 @@ export default function CaseSubmitionReview() {
               placeholder="Enter Middle Name"
               required
               id="spouseMiddleName"
-              readOnly
-              style={{ pointerEvents: "none" }}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  spouseMiddleName: e.target.value,
+                })
+              }
               value={formData.spouseMiddleName}
             />
 
@@ -192,8 +314,12 @@ export default function CaseSubmitionReview() {
               placeholder="Enter Last Name"
               required
               id="spouseLastName"
-              readOnly
-              style={{ pointerEvents: "none" }}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  spouseLastName: e.target.value,
+                })
+              }
               value={formData.spouseLastName}
             />
           </div>
@@ -206,19 +332,46 @@ export default function CaseSubmitionReview() {
                   alt="uploaded image"
                   className="w-72 h-72 object-cover"
                 />
+                <Button
+                  type="button"
+                  color="dark"
+                  size="sm"
+                  onClick={handleImageChange2}
+                >
+                  Change Image
+                </Button>
               </div>
             ) : (
               <>
                 <FileInput
                   type="file"
                   accept="image/*"
-                  onChange={(e) =>
-                    setFormData({ ...formData, image2: e.target.files[0] })
-                  }
+                  onChange={(e) => setFile2(e.target.files[0])}
                 />
+                <Button
+                  type="button"
+                  color="dark"
+                  size="sm"
+                  onClick={handleUploadImage2}
+                  disabled={imageUploadingProgress !== null}
+                >
+                  {imageUploadingProgress ? (
+                    <div className="w-16 h-16">
+                      <CircularProgressbar
+                        value={imageUploadingProgress}
+                        text={`${imageUploadingProgress || 0}%`}
+                      />
+                    </div>
+                  ) : (
+                    "Upload Image"
+                  )}
+                </Button>
               </>
             )}
           </div>
+          {imageUploadingError && (
+            <Alert color="failure">{imageUploadingError}</Alert>
+          )}
         </div>
         <div className="flex flex-col">
           <h2 className="my-5 text-xl">Write your case</h2>

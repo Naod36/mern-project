@@ -202,7 +202,7 @@ export default function CaseSubmitionReview() {
             />
           </div>
           <div className="flex flex-col gap-4 items-center justify-between border-2 border-teal-500 rounded-xl p-3 border-opacity-20">
-            <p>Please Provide Marrage Certificate</p>
+            <p>Marrage Certificate</p>
             {formData.image2 ? (
               <div>
                 <img
@@ -213,18 +213,12 @@ export default function CaseSubmitionReview() {
               </div>
             ) : (
               <>
-                <FileInput
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) =>
-                    setFormData({ ...formData, image2: e.target.files[0] })
-                  }
-                />
+                <h1>Not Uploaded</h1>
               </>
             )}
           </div>
         </div>
-        <h2 className="my-5 text-xl">Write your case</h2>
+        <h2 className="my-5 text-xl">Case details</h2>
         <div className="flex flex-col">
           <ReactQuill
             theme="snow"
@@ -281,13 +275,23 @@ export default function CaseSubmitionReview() {
         </div>
         <div className="mt-5 flex flex-col mb-5 gap-4">
           {formData.state === "approved" && (
+            <h2 className="text-xl font-semibold text-center">
+              Provide date and time for the case
+            </h2>
+          )}
+          {formData.state === "approved" && (
             <DatePicker
               selected={formData.date ? new Date(formData.date) : null}
               onChange={(date) => setFormData({ ...formData, date })}
               showTimeSelect
               dateFormat="Pp"
-              className="p-2 border rounded text-red-500"
+              className="w-full p-2 border rounded text-red-500  dark:bg-slate-800 dark:text-slate-300"
             />
+          )}
+          {formData.state === "denied" && (
+            <h2 className="text-xl font-semibold text-center">
+              Provide a reason for denial
+            </h2>
           )}
           {formData.state === "denied" && (
             <TextInput
@@ -305,7 +309,7 @@ export default function CaseSubmitionReview() {
             />
           )}
           <Button type="submit" gradientDuoTone="purpleToBlue">
-            Submit Case
+            Submit
           </Button>
           {createTempError && (
             <Alert className="mt-5" color="failure">
