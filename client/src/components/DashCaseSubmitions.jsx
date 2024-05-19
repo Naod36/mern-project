@@ -79,7 +79,7 @@ export default function DashCaseSubmitions() {
                     <Table.Row className="bg-white dark:border-gray-800 dark:bg-gray-800">
                       <Table.Cell>
                         {new Date(
-                          caseSubmitions.createdAt
+                          caseSubmitions.updatedAt
                         ).toLocaleDateString()}
                       </Table.Cell>
                       <Table.Cell>

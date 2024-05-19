@@ -108,7 +108,7 @@ export default function CaseSubmitionReview() {
 
       <form onSubmit={handleSubmit}>
         <h2 className="text-2xl mb-6 font-bold text-center">
-          Your Information
+          Case Submiter Information
         </h2>
         <div className="flex  justify-between items-center gap-4">
           <div className="flex flex-1 flex-col gap-4">
@@ -143,7 +143,7 @@ export default function CaseSubmitionReview() {
             />
           </div>
           <div className="flex flex-col gap-4 items-center justify-between border-2 border-teal-500 rounded-xl p-3 border-opacity-20">
-            <p>Please Provide Your Id Card</p>
+            <p> Id Card</p>
             {formData.image1 ? (
               <div>
                 <img
@@ -220,14 +220,18 @@ export default function CaseSubmitionReview() {
         </div>
         <h2 className="my-5 text-xl">Case details</h2>
         <div className="flex flex-col">
-          <ReactQuill
+          <div
+            className="max-w-xl mx-auto w-full p-3 post-content"
+            dangerouslySetInnerHTML={{ __html: formData && formData.details }}
+          ></div>
+          {/* <ReactQuill
             theme="snow"
             placeholder="Write something..."
             className="mb-10 h-52 "
             required
             onChange={(value) => setFormData({ ...formData, details: value })}
             value={formData.details}
-          />
+          /> */}
         </div>
         <div className="mt-5">
           <ul class="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">

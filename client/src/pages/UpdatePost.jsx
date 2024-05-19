@@ -147,7 +147,7 @@ export default function UpdatePost() {
 
       if (res.ok) {
         setCreateTempError(null);
-        // navigate(`/case/${data.slug}`);
+        navigate("/dashboard?tab=case-templates");
       }
     } catch (error) {
       setCreateTempError(error.message);
@@ -175,47 +175,48 @@ export default function UpdatePost() {
             }
             value={formData.category}
           >
-            <option value="Ucategorized">Select Category</option>
-            <option value="option1">Option 1</option>
-            <option value="option2">Option 2</option>
-            <option value="option3">Option 3</option>
+            <option value="uncategorized">Select Category</option>
+            <option value="Civil Case">Civil Case</option>
+            <option value="Criminal Case">Criminal Case</option>
           </Select>
         </div>
         <div className="flex gap-4 items-center justify-between border-2 border-teal-500 rounded-xl p-3 border-opacity-20">
-          <FileInput
-            type="file"
-            accept="image/*"
-            onChange={(e) => setFile(e.target.files[0])}
-          />
-          <Button
-            type="button"
-            color="dark"
-            size="sm"
-            onClick={handleUploadImage}
-            disabled={imageUploadingProgress !== null}
-          >
-            {imageUploadingProgress ? (
-              <div className="w-16 h-16">
-                <CircularProgressbar
-                  value={imageUploadingProgress}
-                  text={`${imageUploadingProgress || 0}%`}
-                />
-              </div>
-            ) : (
-              "Upload Image"
-            )}
-          </Button>
+          {formData.image1 ? (
+            <div>
+              <img
+                src={formData.image}
+                alt="uploaded image"
+                className="w-full h-72 object-cover"
+              />
+            </div>
+          ) : (
+            <>
+              <FileInput
+                type="file"
+                accept="image/*"
+                onChange={(e) => setFile(e.target.files[0])}
+              />
+              <Button
+                type="button"
+                color="dark"
+                size="sm"
+                onClick={handleUploadImage}
+                disabled={imageUploadingProgress !== null}
+              >
+                {imageUploadingProgress ? (
+                  <div className="w-16 h-16">
+                    <CircularProgressbar
+                      value={imageUploadingProgress}
+                      text={`${imageUploadingProgress || 0}%`}
+                    />
+                  </div>
+                ) : (
+                  "Upload Image"
+                )}
+              </Button>
+            </>
+          )}
         </div>
-        {imageUploadingError && (
-          <Alert color="failure">{imageUploadingError}</Alert>
-        )}
-        {formData.image && (
-          <img
-            src={formData.image}
-            alt="uploaded image"
-            className="w-full h-72 object-cover"
-          />
-        )}
         <ReactQuill
           theme="snow"
           value={formData.content}

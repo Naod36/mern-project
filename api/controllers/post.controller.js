@@ -43,7 +43,7 @@ export const getcasetemplates = async (req, res, next) => {
         ],
       }),
     })
-      .sort({ updateAt: sortDirection })
+      .sort({ updatedAt: sortDirection })
       .skip(startIndex)
       .limit(limit);
     const totalCases = await Case.countDocuments();

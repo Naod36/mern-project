@@ -75,7 +75,7 @@ export default function CreateCaseTemp() {
 
       if (res.ok) {
         setCreateTempError(null);
-        navigate(`/case/${data._id}`);
+        navigate("/dashboard?tab=case-templates");
       }
     } catch (error) {
       setCreateTempError(error.message);
@@ -101,10 +101,9 @@ export default function CreateCaseTemp() {
               setFormData({ ...formData, category: e.target.value })
             }
           >
-            <option value="Ucategorized">Select Category</option>
-            <option value="option1">Option 1</option>
-            <option value="option2">Option 2</option>
-            <option value="option3">Option 3</option>
+            <option value="uncategorized">Select Category</option>
+            <option value="Civil Case">Civil Case</option>
+            <option value="Criminal Case">Criminal Case</option>
           </Select>
         </div>
         <div className="flex gap-4 items-center justify-between border-2 border-teal-500 rounded-xl p-3 border-opacity-20">

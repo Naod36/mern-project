@@ -56,10 +56,10 @@ export default function Header() {
           className="hidden lg:inline"
         />
       </form> */}
-
+      {/* 
       <Button className="w-12 h-8 lg:hidden" color="gray" pill>
         <AiOutlineSearch />
-      </Button>
+      </Button> */}
       <div className="flex gap-2 md:order-2">
         <Button
           className="w-12 h-10 hidden sm:inline "

@@ -54,7 +54,7 @@ export const getAllAnswers = async (req, res, next) => {
         path: "userId",
         select: "username email profilePicture", // Populate only the username field
       })
-      .sort({ updateAt: sortDirection })
+      .sort({ updatedAt: sortDirection })
       .skip(startIndex)
       .limit(limit);
 
