@@ -25,6 +25,21 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isJudge: {
+      type: Boolean,
+      default: false,
+    },
+    assignments: [
+      {
+        caseId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Answer", // Assuming Case is your case model
+        },
+        date: {
+          type: Date,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );

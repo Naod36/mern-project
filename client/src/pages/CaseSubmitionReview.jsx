@@ -289,9 +289,11 @@ export default function CaseSubmitionReview() {
               onChange={(date) => setFormData({ ...formData, date })}
               showTimeSelect
               dateFormat="Pp"
+              minDate={new Date(new Date().setDate(new Date().getDate() + 1))}
               className="w-full p-2 border rounded text-red-500  dark:bg-slate-800 dark:text-slate-300"
             />
           )}
+
           {formData.state === "denied" && (
             <h2 className="text-xl font-semibold text-center">
               Provide a reason for denial

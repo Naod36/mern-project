@@ -39,6 +39,8 @@ export default function DashSidebar() {
       console.log(error.message);
     }
   };
+  console.log(currentUser);
+
   return (
     <Sidebar className="w-full md:w-56">
       <Sidebar.Items>
@@ -54,11 +56,18 @@ export default function DashSidebar() {
               </Sidebar.Item>
             </Link>
           )}
+
           <Link to="/dashboard?tab=profile">
             <Sidebar.Item
               active={tab === "profile"}
               icon={HiUser}
-              label={currentUser.isAdmin ? "Admin" : "User"}
+              label={
+                currentUser.isJudge
+                  ? "Judge"
+                  : currentUser.isAdmin
+                  ? "Admin"
+                  : "User"
+              }
               labelColor="dark"
               as="div"
               // href="/dashboard"

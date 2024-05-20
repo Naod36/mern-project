@@ -178,7 +178,7 @@ export const myCases = async (req, res, next) => {
       userId,
       ...(req.query.caseId && { _id: req.query.caseId }),
     })
-      .sort({ updateAt: sortDirection })
+      .sort({ updatedAt: sortDirection })
       .skip(startIndex)
       .limit(limit);
 
