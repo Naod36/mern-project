@@ -3,6 +3,11 @@ import { useSelector } from "react-redux";
 import { Modal, Table, Button } from "flowbite-react";
 import { Link, useParams } from "react-router-dom";
 import { HiOutlineExclamation } from "react-icons/hi";
+import { toast, ToastContainer } from "react-toastify"; // Import toast and ToastContainer
+
+import io from "socket.io-client";
+
+const socket = io("http://localhost:3000"); // Adjust the URL if needed
 
 export default function DashCases() {
   const { currentUser } = useSelector((state) => state.user);
@@ -27,6 +32,20 @@ export default function DashCases() {
     };
 
     fetchCases();
+
+    // Set up socket connection and event listeners
+    socket.on("stateUpdated", (updatedCase) => {
+      setUserCases((prevCases) =>
+        prevCases.map((caseItem) =>
+          caseItem._id === updatedCase._id ? updatedCase : caseItem
+        )
+      );
+      toast.success("Case Notification");
+    });
+
+    return () => {
+      socket.off("stateUpdated");
+    };
   }, [currentUser._id]);
   const handleShowMore = async () => {
     const startIndex = userCases.length;
@@ -85,7 +104,7 @@ export default function DashCases() {
         <>
           <Table hoverable className="shadow-md">
             <Table.Head>
-              <Table.HeadCell>Date Submited</Table.HeadCell>
+              <Table.HeadCell>ate Submited</Table.HeadCell>
               <Table.HeadCell>Date Updated</Table.HeadCell>
               <Table.HeadCell>Category</Table.HeadCell>
               <Table.HeadCell>Delete</Table.HeadCell>
@@ -173,6 +192,7 @@ export default function DashCases() {
           </div>
         </Modal.Body>
       </Modal>
+      <ToastContainer /> {/* Add ToastContainer */}
     </div>
   );
 }

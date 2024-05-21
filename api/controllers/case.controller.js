@@ -1,6 +1,7 @@
 import Answer from "../models/case.model.js";
 import User from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js";
+import io from "../index.js";
 
 export const submitAnswer = async (req, res, next) => {
   try {
@@ -19,6 +20,9 @@ export const submitAnswer = async (req, res, next) => {
 
     // Save the answer to the database
     const savedAnswer = await newAnswer.save();
+
+    // Emit socket event to notify user who submitted the case
+    io.to(savedAnswer.userId).emit("stateUpdated", savedAnswer);
 
     // Send a success response with the saved answer
     res.status(201).json({
@@ -351,6 +355,10 @@ export const assignCaseToJudge = async (req, res, next) => {
         },
       },
     });
+
+    // Emit socket event to notify assigned judge
+    io.to(judgeId).emit("stateUpdated", updatedCase);
+
     res.status(200).send("Case assigned successfully");
   } catch (error) {
     return next("Error assigning case:", error);
