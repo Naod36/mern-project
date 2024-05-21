@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import io from "socket.io-client";
-import { toast, ToastContainer } from "react-toastify";
+import { toast, ToastContainer, Flip } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 
 const socket = io("http://localhost:3000");
@@ -16,7 +17,17 @@ export default function GlobalSocketListener() {
 
     // Listen for case assignments
     socket.on("caseAssigned", (assignedCase) => {
-      toast.success("You have been assigned a new case!");
+      toast.info("CCFS: Case Assighned.", {
+        position: "top-right",
+        autoClose: 15000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Flip,
+      });
       // Handle the assigned case update if necessary
       // For example, you can fetch the updated cases or update the state
     });
@@ -26,5 +37,19 @@ export default function GlobalSocketListener() {
     };
   }, [currentUser]);
 
-  return <ToastContainer />;
+  return (
+    <ToastContainer
+      position="top-right"
+      autoClose={15000}
+      hideProgressBar={false}
+      newestOnTop
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="dark"
+      transition={Flip}
+    />
+  );
 }

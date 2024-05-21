@@ -4,6 +4,7 @@ import { Modal, Table, Button } from "flowbite-react";
 import { Link, useParams } from "react-router-dom";
 import { HiOutlineExclamation } from "react-icons/hi";
 import { toast, ToastContainer } from "react-toastify"; // Import toast and ToastContainer
+import "react-toastify/dist/ReactToastify.css";
 
 import io from "socket.io-client";
 
@@ -104,6 +105,16 @@ export default function DashCases() {
       console.log(error.message);
     }
   };
+  toast.info({
+    position: "top-right",
+    autoClose: 15000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "dark",
+  });
   return (
     <div className="w-full overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
       {userCases.length > 0 ? (
@@ -198,7 +209,18 @@ export default function DashCases() {
           </div>
         </Modal.Body>
       </Modal>
-      <ToastContainer /> {/* Add ToastContainer */}
+      <ToastContainer
+        position="top-right"
+        autoClose={15000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
     </div>
   );
 }
