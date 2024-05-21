@@ -7,6 +7,7 @@ import DashUsers from "../components/DashUsers";
 import DashCasesTemplates from "../components/DashCasesTemplates";
 import DashCaseSubmitions from "../components/DashCaseSubmitions";
 import DashBoardComponent from "../components/DashBoardComponent";
+import DashAssighnedCase from "../components/DashAssighnedCase";
 
 export default function Dashboard() {
   const location = useLocation();
@@ -35,6 +36,8 @@ export default function Dashboard() {
       {tab === "case-templates" && <DashCasesTemplates />}
       {/*my cases for users*/}
       {tab === "cases" && <DashCases />}
+      {tab === "Assigned-cases" && <DashAssighnedCase />}
+
       {/*users*/}
       {tab === "users" && <DashUsers />}
     </div>

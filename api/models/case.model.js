@@ -52,6 +52,7 @@ const AnswerSchema = new Schema(
     judgeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User", // Assuming User is your user model
+      default: null,
     },
     date: {
       type: Date,

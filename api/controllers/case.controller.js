@@ -78,6 +78,38 @@ export const getAllAnswers = async (req, res, next) => {
     console.log(error);
   }
 };
+export const getJudge = async (req, res, next) => {
+  console.log(req.query.caseId);
+  try {
+    // Check if user is an admin
+    if (!req.user.isAdmin) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to access this resource",
+      });
+    }
+
+    // Fetch the answer from the database and populate the 'judgeId' field
+    const answer = await Answer.findById(req.query.caseId).populate(
+      "judgeId",
+      "username"
+    );
+    console.log(answer);
+
+    // If the answer is found and it has a judge, send back the judge's username and ID
+    if (answer && answer.judgeId) {
+      res.status(200).json({ success: true, judgeId: answer.judgeId });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: "Answer not found or no judge assigned",
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching assigned judge:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
 
 export const getAnswers = async (req, res, next) => {
   try {
@@ -197,7 +229,6 @@ export const myCases = async (req, res, next) => {
     res
       .status(200)
       .json({ success: true, mycases, totalCases, lastMonthAnswers });
-    console.log("cases", mycases);
   } catch (error) {
     // Handle errors
     console.log(error);
@@ -290,5 +321,70 @@ export const deletemycase = async (req, res, next) => {
     res.status(200).json("Case has been deleted");
   } catch (error) {
     return next(error);
+  }
+};
+export const getJudges = async (req, res) => {
+  try {
+    const judges = await User.find({ isJudge: true });
+    res.status(200).json(judges);
+  } catch (error) {
+    console.error("Error fetching judges:", error);
+    res.status(500).send("Failed to fetch judges");
+  }
+};
+export const assignCaseToJudge = async (req, res, next) => {
+  const { judgeId, caseId, date } = req.body;
+
+  try {
+    // Update the case with the judgeId and assignment date
+    await Answer.findByIdAndUpdate(caseId, {
+      judgeId: judgeId,
+      date: date,
+    });
+
+    // Update the judge's assignments
+    await User.findByIdAndUpdate(judgeId, {
+      $push: {
+        assignments: {
+          caseId,
+          date,
+        },
+      },
+    });
+    res.status(200).send("Case assigned successfully");
+  } catch (error) {
+    return next("Error assigning case:", error);
+  }
+};
+
+export const getCasesAssignedToJudge = async (req, res) => {
+  const { judgeId } = req.params;
+  console.log("Judge ID:", judgeId);
+  console.log("params:", req.params);
+
+  if (!judgeId) {
+    return res.status(400).json({ error: "Judge ID is required" });
+  }
+
+  try {
+    // Fetch the user and populate their assignments
+    const judge = await User.findById(judgeId).populate("assignments.caseId");
+
+    if (!judge) {
+      return res.status(404).json({ error: "Judge not found" });
+    }
+
+    // Filter assignments to get only those with the specific judgeId
+    const caseIds = judge.assignments
+      .filter((assignment) => assignment.caseId.judgeId.toString() === judgeId)
+      .map((assignment) => assignment.caseId);
+
+    // Fetch the cases from the Answer model using the caseIds
+    const cases = await Answer.find({ _id: { $in: caseIds } });
+
+    res.status(200).json(cases);
+  } catch (error) {
+    console.error("Error fetching cases:", error);
+    res.status(500).send("Failed to fetch cases");
   }
 };

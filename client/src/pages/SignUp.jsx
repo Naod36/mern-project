@@ -39,7 +39,7 @@ export default function SignUp() {
       }
       setLoading(false);
       if (res.ok) {
-        navigate("/");
+        navigate("/Dashboard?tab=profile");
       }
     } catch (error) {
       setErrorMessage(error.message);

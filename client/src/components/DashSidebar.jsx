@@ -39,7 +39,6 @@ export default function DashSidebar() {
       console.log(error.message);
     }
   };
-  console.log(currentUser);
 
   return (
     <Sidebar className="w-full md:w-56">
@@ -53,6 +52,17 @@ export default function DashSidebar() {
                 as="div"
               >
                 Dashboard
+              </Sidebar.Item>
+            </Link>
+          )}
+          {currentUser.isJudge && (
+            <Link to="/dashboard?tab=Assigned-cases">
+              <Sidebar.Item
+                active={tab === "Assigned-cases" || !tab}
+                icon={HiChartPie}
+                as="div"
+              >
+                Assighned Cases
               </Sidebar.Item>
             </Link>
           )}
