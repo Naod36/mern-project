@@ -7,10 +7,6 @@ import { useSelector } from "react-redux";
 import lightLogo from "/logo.png";
 import darkLogo from "/logo-L.png";
 
-import io from "socket.io-client";
-
-const socket = io("http://localhost:3000");
-
 export default function SignUp() {
   const [formData, setFormData] = useState({});
   const [errorMessage, setErrorMessage] = useState(null);
@@ -43,8 +39,6 @@ export default function SignUp() {
       }
       setLoading(false);
       if (res.ok) {
-        socket.emit("joinRoom", data._id); // Emit the joinRoom event
-
         navigate("/Dashboard?tab=profile");
       }
     } catch (error) {

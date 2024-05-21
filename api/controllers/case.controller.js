@@ -340,55 +340,35 @@ export const assignCaseToJudge = async (req, res, next) => {
   const { judgeId, caseId, date } = req.body;
 
   try {
-    // Update the case with the judgeId, assignment date, and change the state if needed
-    const updatedCase = await Answer.findByIdAndUpdate(
-      caseId,
-      {
-        judgeId: judgeId,
-        date: date,
-        state: "assigned", // Update state if needed
-      },
-      { new: true } // This option returns the updated document
-    );
-
-    if (!updatedCase) {
-      return res.status(404).json({ message: "Case not found" });
-    }
+    // Update the case with the judgeId and assignment date
+    await Answer.findByIdAndUpdate(caseId, {
+      judgeId: judgeId,
+      date: date,
+    });
 
     // Update the judge's assignments
-    const updatedUser = await User.findByIdAndUpdate(
-      judgeId,
-      {
-        $push: {
-          assignments: {
-            caseId,
-            date,
-          },
+    await User.findByIdAndUpdate(judgeId, {
+      $push: {
+        assignments: {
+          caseId,
+          date,
         },
       },
-      { new: true }
-    );
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: "Judge not found" });
-    }
+    });
 
     // Emit socket event to notify assigned judge
-    io.to(judgeId).emit("caseAssigned", updatedCase); // Emit a different event
+    io.to(judgeId).emit("stateUpdated", updatedCase);
 
-    res.status(200).json({ message: "Case assigned successfully" });
+    res.status(200).send("Case assigned successfully");
   } catch (error) {
-    console.error("Error assigning case:", error);
-    res
-      .status(500)
-      .json({ message: "Error assigning case", error: error.message });
+    return next("Error assigning case:", error);
   }
 };
 
 export const getCasesAssignedToJudge = async (req, res) => {
   const { judgeId } = req.params;
-  // console.log("Judge ID:", judgeId);
-  // console.log("params:", req.params);
+  console.log("Judge ID:", judgeId);
+  console.log("params:", req.params);
 
   if (!judgeId) {
     return res.status(400).json({ error: "Judge ID is required" });
