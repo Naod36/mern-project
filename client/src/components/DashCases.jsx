@@ -4,11 +4,11 @@ import { Modal, Table, Button } from "flowbite-react";
 import { Link, useParams } from "react-router-dom";
 import { HiOutlineExclamation } from "react-icons/hi";
 import { toast, ToastContainer } from "react-toastify"; // Import toast and ToastContainer
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
 
-import io from "socket.io-client";
+// import io from "socket.io-client";
 
-const socket = io("http://localhost:3000"); // Adjust the URL if needed
+// const socket = io("http://localhost:3000"); // Adjust the URL if needed
 
 export default function DashCases() {
   const { currentUser } = useSelector((state) => state.user);
@@ -35,18 +35,18 @@ export default function DashCases() {
     fetchCases();
 
     // Set up socket connection and event listeners
-    socket.on("stateUpdated", (updatedCase) => {
-      setUserCases((prevCases) =>
-        prevCases.map((caseItem) =>
-          caseItem._id === updatedCase._id ? updatedCase : caseItem
-        )
-      );
-      toast.success("Case Notification");
-    });
+    // socket.on("stateUpdated", (updatedCase) => {
+    //   setUserCases((prevCases) =>
+    //     prevCases.map((caseItem) =>
+    //       caseItem._id === updatedCase._id ? updatedCase : caseItem
+    //     )
+    //   );
+    //   toast.success("Case Notification");
+    // });
 
-    return () => {
-      socket.off("stateUpdated");
-    };
+    // return () => {
+    //   socket.off("stateUpdated");
+    // };
   }, [currentUser._id]);
   const handleShowMore = async () => {
     const startIndex = userCases.length;
@@ -99,23 +99,23 @@ export default function DashCases() {
       console.log(error.message);
     }
   };
-  toast.info({
-    position: "top-right",
-    autoClose: 15000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "dark",
-  });
+  // toast.info({
+  //   position: "top-right",
+  //   autoClose: 15000,
+  //   hideProgressBar: false,
+  //   closeOnClick: true,
+  //   pauseOnHover: true,
+  //   draggable: true,
+  //   progress: undefined,
+  //   theme: "dark",
+  // });
   return (
     <div className="w-full overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
       {userCases.length > 0 ? (
         <>
           <Table hoverable className="shadow-md">
             <Table.Head>
-              <Table.HeadCell>ate Submited</Table.HeadCell>
+              <Table.HeadCell>Date Submited</Table.HeadCell>
               <Table.HeadCell>Date Updated</Table.HeadCell>
               <Table.HeadCell>Category</Table.HeadCell>
               <Table.HeadCell>Delete</Table.HeadCell>
@@ -203,7 +203,7 @@ export default function DashCases() {
           </div>
         </Modal.Body>
       </Modal>
-      <ToastContainer
+      {/* <ToastContainer
         position="top-right"
         autoClose={15000}
         hideProgressBar={false}
@@ -214,7 +214,7 @@ export default function DashCases() {
         draggable
         pauseOnHover
         theme="dark"
-      />
+      /> */}
     </div>
   );
 }

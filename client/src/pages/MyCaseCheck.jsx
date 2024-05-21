@@ -375,14 +375,6 @@ export default function CaseSubmitionReview() {
         </div>
         <div className="flex flex-col">
           <h2 className="my-5 text-xl">Write your case</h2>
-          <ReactQuill
-            theme="snow"
-            placeholder="Write something..."
-            className="mb-10 h-52 "
-            required
-            onChange={(value) => setFormData({ ...formData, details: value })}
-            value={formData.details}
-          />
         </div>
         <div className="flex flex-col my-10 gap-4 p-5 dark:bg-slate-800   rounded-md shadow-md">
           <h1 className="text-xl text-center justify-between">
