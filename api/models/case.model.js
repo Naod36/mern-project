@@ -66,6 +66,10 @@ const AnswerSchema = new Schema(
       type: String,
       default: "Not Provided",
     },
+    result: {
+      type: String,
+      default: "Not Provided",
+    },
   },
   { timestamps: true }
 );

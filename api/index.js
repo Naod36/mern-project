@@ -1,6 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-// import cors from "cors"; // Import the cors package
+import cors from "cors"; // Import the cors package
 
 import dotenv from "dotenv";
 import userRoutes from "./routes/user.route.js";
@@ -10,11 +10,11 @@ import caseRoutes from "./routes/case.route.js";
 import cookieParser from "cookie-parser";
 
 // socket.io
-// import http from "http";
-// // const socketIo = require("socket.io");
+// const socketIo = require("socket.io");
 
-// import { Server } from "socket.io";
-// import Answer from "./models/case.model.js"; // Adjust the path as needed
+import http from "http";
+import { Server } from "socket.io";
+import Answer from "./models/case.model.js"; // Adjust the path as needed
 // socket.io
 
 dotenv.config();
@@ -38,17 +38,17 @@ mongoose.connection.on("disconnected", () => {
 });
 
 const app = express();
-// app.use(cors());
+app.use(cors());
 
-// socket.io
+//socket.io
 
-// const server = http.createServer(app);
-// const io = new Server(server, {
-//   cors: {
-//     origin: " http://localhost:5173", // Adjust as necessary for your environment
-//     methods: ["GET", "POST"],
-//   },
-// });
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: " http://localhost:5173", // Adjust as necessary for your environment
+    methods: ["GET", "POST"],
+  },
+});
 // socket.io
 
 app.use(express.json());
@@ -56,9 +56,9 @@ app.use(cookieParser());
 
 // socket.io
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000!");
-});
+// app.listen(3000, () => {
+//   console.log("Server is running on port 3000!");
+// });
 
 // socket.io
 // io.on("connection", (socket) => {
@@ -84,32 +84,32 @@ app.use((err, req, res, next) => {
 // socket.io
 
 // Listen for changes in the Answer model
-// const answerChangeStream = Answer.watch();
-// answerChangeStream.on("change", (change) => {
-//   if (
-//     change.operationType === "update" &&
-//     change.updateDescription.updatedFields.state
-//   ) {
-//     Answer.findById(change.documentKey._id).then((updatedAnswer) => {
-//       io.emit("stateUpdated", updatedAnswer);
-//     });
-//   }
-// });
-// io.on("connection", (socket) => {
-//   socket.on("joinRoom", (userId) => {
-//     socket.join(userId);
-//   });
-// });
+const answerChangeStream = Answer.watch();
+answerChangeStream.on("change", (change) => {
+  if (
+    change.operationType === "update" &&
+    change.updateDescription.updatedFields.state
+  ) {
+    Answer.findById(change.documentKey._id).then((updatedAnswer) => {
+      io.emit("stateUpdated", updatedAnswer);
+    });
+  }
+});
+io.on("connection", (socket) => {
+  socket.on("joinRoom", (userId) => {
+    socket.join(userId);
+  });
+});
 
-// // Middleware to make io accessible in routes
-// app.use((req, res, next) => {
-//   req.io = io;
-//   next();
-// });
+// Middleware to make io accessible in routes
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
 
 // Start the server
-// server.listen(3000, () => {
-//   console.log("Server is running on port 3000!");
-// });
+server.listen(3000, () => {
+  console.log("Server is running on port 3000!");
+});
 
-// export default io;
+export default io;

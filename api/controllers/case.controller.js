@@ -1,7 +1,7 @@
 import Answer from "../models/case.model.js";
 import User from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js";
-// import io from "../index.js";
+import io from "../index.js";
 
 export const submitAnswer = async (req, res, next) => {
   try {
@@ -21,8 +21,8 @@ export const submitAnswer = async (req, res, next) => {
     // Save the answer to the database
     const savedAnswer = await newAnswer.save();
 
-    // Emit socket event to notify user who submitted the case
-    // io.to(savedAnswer.userId).emit("stateUpdated", savedAnswer);
+    //Emit socket event to notify user who submitted the case
+    io.to(savedAnswer.userId).emit("stateUpdated", savedAnswer);
 
     // Send a success response with the saved answer
     res.status(201).json({
@@ -340,35 +340,68 @@ export const assignCaseToJudge = async (req, res, next) => {
   const { judgeId, caseId, date } = req.body;
 
   try {
-    // Update the case with the judgeId and assignment date
-    await Answer.findByIdAndUpdate(caseId, {
-      judgeId: judgeId,
-      date: date,
-    });
+    // // Update the case with the judgeId and assignment date
+    // await Answer.findByIdAndUpdate(caseId, {
+    //   judgeId: judgeId,
+    //   date: date,
+    // });
+
+    // Update the case with the judgeId, assignment date, and change the state if needed
+    const updatedCase = await Answer.findByIdAndUpdate(
+      caseId,
+      {
+        judgeId: judgeId,
+        date: date,
+        state: "assigned", // Update state if needed
+      },
+      { new: true } // This option returns the updated document
+    );
+
+    if (!updatedCase) {
+      return res.status(404).json({ message: "Case not found" });
+    }
 
     // Update the judge's assignments
-    await User.findByIdAndUpdate(judgeId, {
-      $push: {
-        assignments: {
-          caseId,
-          date,
+    // await User.findByIdAndUpdate(judgeId, {
+    //   $push: {
+    //     assignments: {
+    //       caseId,
+    //       date,
+    const updatedUser = await User.findByIdAndUpdate(
+      judgeId,
+      {
+        $push: {
+          assignments: {
+            caseId,
+            date,
+          },
         },
       },
-    });
+      // });
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "Judge not found" });
+    }
 
     // Emit socket event to notify assigned judge
-    // io.to(judgeId).emit("stateUpdated", updatedCase);
+    io.to(judgeId).emit("stateUpdated", updatedCase);
 
-    res.status(200).send("Case assigned successfully");
+    // res.status(200).send("Case assigned successfully");
+    res.status(200).json({ message: "Case assigned successfully" });
   } catch (error) {
-    return next("Error assigning case:", error);
+    console.error("Error assigning case:", error);
+    res
+      .status(500)
+      .json({ message: "Error assigning case", error: error.message });
   }
 };
 
 export const getCasesAssignedToJudge = async (req, res) => {
   const { judgeId } = req.params;
-  console.log("Judge ID:", judgeId);
-  console.log("params:", req.params);
+  // console.log("Judge ID:", judgeId);
+  // console.log("params:", req.params);
 
   if (!judgeId) {
     return res.status(400).json({ error: "Judge ID is required" });
@@ -389,7 +422,17 @@ export const getCasesAssignedToJudge = async (req, res) => {
 
     // Fetch the cases from the Answer model using the caseIds
     const cases = await Answer.find({ _id: { $in: caseIds } });
-
+    // const data = cases.map((caseData) => {
+    //   return {
+    //     id: caseData._id,
+    //     state: caseData.state,
+    //     date: caseData.date,
+    //   };
+    // });
+    // if (data.state === "denied") {
+    //   return res.status(404).json({ error: "Case not found" });
+    // }
+    // console.log(data);
     res.status(200).json(cases);
   } catch (error) {
     console.error("Error fetching cases:", error);

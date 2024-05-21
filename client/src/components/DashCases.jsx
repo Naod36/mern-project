@@ -4,11 +4,11 @@ import { Modal, Table, Button } from "flowbite-react";
 import { Link, useParams } from "react-router-dom";
 import { HiOutlineExclamation } from "react-icons/hi";
 import { toast, ToastContainer } from "react-toastify"; // Import toast and ToastContainer
-// import "react-toastify/dist/ReactToastify.css";
+import "react-toastify/dist/ReactToastify.css";
 
-// import io from "socket.io-client";
+import io from "socket.io-client";
 
-// const socket = io("http://localhost:3000"); // Adjust the URL if needed
+const socket = io("http://localhost:3000"); // Adjust the URL if needed
 
 export default function DashCases() {
   const { currentUser } = useSelector((state) => state.user);
@@ -34,19 +34,26 @@ export default function DashCases() {
 
     fetchCases();
 
-    // Set up socket connection and event listeners
-    // socket.on("stateUpdated", (updatedCase) => {
-    //   setUserCases((prevCases) =>
-    //     prevCases.map((caseItem) =>
-    //       caseItem._id === updatedCase._id ? updatedCase : caseItem
-    //     )
-    //   );
-    //   toast.success("Case Notification");
-    // });
+    // Set up socket connection and event listeners for submiter but delet this if i end up using room
+    socket.on("stateUpdated", (updatedCase) => {
+      setUserCases((prevCases) =>
+        prevCases.map((caseItem) =>
+          caseItem._id === updatedCase._id ? updatedCase : caseItem
+        )
+      );
+      // toast.success("Case Notification");
+      // Check if the updated case belongs to the current user or is assigned to the current user
+      if (
+        updatedCase.userId === currentUser._id ||
+        updatedCase.judgeId === currentUser._id
+      ) {
+        toast.success("Case Notification");
+      }
+    });
 
-    // return () => {
-    //   socket.off("stateUpdated");
-    // };
+    return () => {
+      socket.off("stateUpdated");
+    };
   }, [currentUser._id]);
   const handleShowMore = async () => {
     const startIndex = userCases.length;
@@ -203,18 +210,18 @@ export default function DashCases() {
           </div>
         </Modal.Body>
       </Modal>
-      {/* <ToastContainer
-        position="top-right"
-        autoClose={15000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-      /> */}
+      <ToastContainer
+      // position="top-right"
+      // autoClose={15000}
+      // hideProgressBar={false}
+      // newestOnTop
+      // closeOnClick
+      // rtl={false}
+      // pauseOnFocusLoss
+      // draggable
+      // pauseOnHover
+      // theme="dark"
+      />
     </div>
   );
 }
