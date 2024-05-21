@@ -59,9 +59,9 @@ app.use(cookieParser());
 // });
 
 // socket.io
-io.on("connection", (socket) => {
-  console.log("A user connected:", socket.id);
-});
+// io.on("connection", (socket) => {
+//   console.log("A user connected:", socket.id);
+// });
 // socket.io
 
 app.use("/api/case", caseRoutes);
@@ -92,6 +92,17 @@ answerChangeStream.on("change", (change) => {
       io.emit("stateUpdated", updatedAnswer);
     });
   }
+});
+io.on("connection", (socket) => {
+  socket.on("joinRoom", (userId) => {
+    socket.join(userId);
+  });
+});
+
+// Middleware to make io accessible in routes
+app.use((req, res, next) => {
+  req.io = io;
+  next();
 });
 
 // Start the server

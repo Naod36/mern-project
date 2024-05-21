@@ -40,7 +40,13 @@ export default function DashCases() {
           caseItem._id === updatedCase._id ? updatedCase : caseItem
         )
       );
-      toast.success("Case Notification");
+      // Check if the updated case belongs to the current user or is assigned to the current user
+      if (
+        updatedCase.userId === currentUser._id ||
+        updatedCase.judgeId === currentUser._id
+      ) {
+        toast.success("Case Notification");
+      }
     });
 
     return () => {

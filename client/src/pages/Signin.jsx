@@ -12,6 +12,10 @@ import {
 import lightLogo from "/logo.png";
 import darkLogo from "/logo-L.png";
 
+import io from "socket.io-client";
+
+const socket = io("http://localhost:3000");
+
 export default function SignIn() {
   const [formData, setFormData] = useState({});
   const { loading, error: errorMessage } = useSelector((state) => state.user);
@@ -45,6 +49,7 @@ export default function SignIn() {
 
       if (res.ok) {
         dispatch(signInSuccess(data));
+        socket.emit("joinRoom", data._id);
         navigate("/");
       }
     } catch (error) {
