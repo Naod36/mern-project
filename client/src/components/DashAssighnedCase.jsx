@@ -62,8 +62,8 @@ export default function DashAssignedCase() {
         <>
           <Table hoverable className="shadow-md">
             <Table.Head>
-              <Table.HeadCell className="w-1/5 ">Date Submitted</Table.HeadCell>
-              <Table.HeadCell className="w-1/5 ">Date Updated</Table.HeadCell>
+              <Table.HeadCell>Date Submitted</Table.HeadCell>
+              <Table.HeadCell>Date Updated</Table.HeadCell>
               <Table.HeadCell>Category</Table.HeadCell>
 
               <Table.HeadCell className="text-center">Actions</Table.HeadCell>
@@ -89,15 +89,6 @@ export default function DashAssignedCase() {
                     >
                       View
                     </Link>
-                    <span
-                      onClick={() => {
-                        setShowModal(true);
-                        setCaseIdToDelete(caseTemplate._id);
-                      }}
-                      className="text-red-500 font-medium hover:underline cursor-pointer"
-                    >
-                      Close Case
-                    </span>
                   </Table.Cell>
                 </Table.Row>
               </Table.Body>

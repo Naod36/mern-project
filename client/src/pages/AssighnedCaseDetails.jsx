@@ -33,33 +33,34 @@ export default function CaseSubmitionReview() {
   const [error, setError] = useState(null);
   const { currentUser } = useSelector((state) => state.user);
 
-  const handleUpdate = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
+    const finalFormData = { ...formData };
+
+    const payload = {
+      answerId: caseId,
+
+      judgeStatement: finalFormData.judgeStatement,
+    };
     try {
-      const res = await fetch(
-        `/api/case/updatemycase/${formData._id}/${currentUser._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData, state),
-        }
-      );
+      const res = await fetch(`/api/case/attach-statment/${caseId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
       const data = await res.json();
       if (!res.ok) {
         setCreateTempError(data.message);
         return;
       }
-
-      if (res.ok) {
-        setCreateTempError(null);
-        setstate("pending");
-        navigate("/dashboard?tab=cases");
-      }
-      console.log(state);
+      setCreateTempError(null);
+      navigate("/dashboard?tab=Assigned-cases");
     } catch (error) {
-      setCreateTempError(error.message);
+      console.log(error.message);
+      setError("An error occurred while processing the answer.");
     }
   };
 
@@ -182,11 +183,11 @@ export default function CaseSubmitionReview() {
   console.log(formData);
   return (
     <div className="p-3 max-w-3xl mx-auto min-h-screen">
-      <h1 className=" p-5 my-5 text-3xl text-center font-bold">My Case</h1>
+      <h1 className=" p-5 my-5 text-3xl text-center font-bold">Assign Case</h1>
       <hr className="my-5 border border-gray-400 dark:border-gray-700" />
 
-      <form onSubmit={handleUpdate}>
-        <h2 className="text-2xl mb-6 font-bold text-center">Your I</h2>
+      <form onSubmit={handleSubmit}>
+        <h2 className="text-2xl mb-6 font-bold text-center">Information</h2>
         <div className="flex  justify-between items-center gap-4">
           <div className="flex flex-1 flex-col gap-4">
             <TextInput
@@ -194,6 +195,8 @@ export default function CaseSubmitionReview() {
               placeholder="Enter First Name"
               required
               id="firstName"
+              readOnly
+              style={{ pointerEvents: "none" }}
               onChange={(e) =>
                 setFormData({ ...formData, firstName: e.target.value })
               }
@@ -205,6 +208,8 @@ export default function CaseSubmitionReview() {
               placeholder="Enter Middle Name"
               required
               id="middleName"
+              readOnly
+              style={{ pointerEvents: "none" }}
               onChange={(e) =>
                 setFormData({
                   ...formData,
@@ -219,6 +224,8 @@ export default function CaseSubmitionReview() {
               placeholder="Enter Last Name"
               required
               id="lastName"
+              readOnly
+              style={{ pointerEvents: "none" }}
               onChange={(e) =>
                 setFormData({
                   ...formData,
@@ -229,7 +236,7 @@ export default function CaseSubmitionReview() {
             />
           </div>
           <div className="flex flex-col gap-4 items-center justify-between border-2 border-teal-500 rounded-xl p-3 border-opacity-20">
-            <p>Please Provide Your Id Card</p>
+            <p>Id Card</p>
             {formData.image1 ? (
               <div>
                 <img
@@ -237,46 +244,13 @@ export default function CaseSubmitionReview() {
                   alt="uploaded image"
                   className="w-full h-72 object-cover"
                 />
-                <Button
-                  type="button"
-                  color="dark"
-                  size="sm"
-                  onClick={handleImageChange}
-                >
-                  Change Image
-                </Button>
               </div>
             ) : (
               <>
-                <FileInput
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setFile(e.target.files[0])}
-                />
-                <Button
-                  type="button"
-                  color="dark"
-                  size="sm"
-                  onClick={handleUploadImage}
-                  disabled={imageUploadingProgress !== null}
-                >
-                  {imageUploadingProgress ? (
-                    <div className="w-16 h-16">
-                      <CircularProgressbar
-                        value={imageUploadingProgress}
-                        text={`${imageUploadingProgress || 0}%`}
-                      />
-                    </div>
-                  ) : (
-                    "Upload Image"
-                  )}
-                </Button>
+                <h1>Not Sent</h1>
               </>
             )}
           </div>
-          {imageUploadingError && (
-            <Alert color="failure">{imageUploadingError}</Alert>
-          )}
         </div>
         <h2 className="text-2xl mb-6 font-bold text-center">
           <hr className="my-5 mt-10 border border-gray-400 dark:border-gray-700" />
@@ -288,6 +262,9 @@ export default function CaseSubmitionReview() {
               type="text"
               placeholder="Enter First Name"
               required
+              id="spouseFirstName"
+              readOnly
+              style={{ pointerEvents: "none" }}
               onChange={(e) =>
                 setFormData({ ...formData, spouseFirstName: e.target.value })
               }
@@ -299,6 +276,8 @@ export default function CaseSubmitionReview() {
               placeholder="Enter Middle Name"
               required
               id="spouseMiddleName"
+              readOnly
+              style={{ pointerEvents: "none" }}
               onChange={(e) =>
                 setFormData({
                   ...formData,
@@ -313,6 +292,8 @@ export default function CaseSubmitionReview() {
               placeholder="Enter Last Name"
               required
               id="spouseLastName"
+              readOnly
+              style={{ pointerEvents: "none" }}
               onChange={(e) =>
                 setFormData({
                   ...formData,
@@ -323,7 +304,7 @@ export default function CaseSubmitionReview() {
             />
           </div>
           <div className="flex flex-col gap-4 items-center justify-between border-2 border-teal-500 rounded-xl p-3 border-opacity-20">
-            <p>Please Provide Marrage Certificate</p>
+            <p>Marriage Certificate</p>
             {formData.image2 ? (
               <div>
                 <img
@@ -331,54 +312,44 @@ export default function CaseSubmitionReview() {
                   alt="uploaded image"
                   className="w-72 h-72 object-cover"
                 />
-                <Button
-                  type="button"
-                  color="dark"
-                  size="sm"
-                  onClick={handleImageChange2}
-                >
-                  Change Image
-                </Button>
               </div>
             ) : (
               <>
-                <FileInput
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setFile2(e.target.files[0])}
-                />
-                <Button
-                  type="button"
-                  color="dark"
-                  size="sm"
-                  onClick={handleUploadImage2}
-                  disabled={imageUploadingProgress !== null}
-                >
-                  {imageUploadingProgress ? (
-                    <div className="w-16 h-16">
-                      <CircularProgressbar
-                        value={imageUploadingProgress}
-                        text={`${imageUploadingProgress || 0}%`}
-                      />
-                    </div>
-                  ) : (
-                    "Upload Image"
-                  )}
-                </Button>
+                <h1>Not Sent</h1>
               </>
             )}
           </div>
-          {imageUploadingError && (
-            <Alert color="failure">{imageUploadingError}</Alert>
+        </div>
+        <h2 className="my-5 text-xl">Case details</h2>
+        <div className="flex flex-col">
+          <div
+            className="max-w-xl mx-auto w-full p-3 post-content"
+            dangerouslySetInnerHTML={{ __html: formData && formData.details }}
+          ></div>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          <h2 className="my-5 text-xl">Attach Statement</h2>
+          <ReactQuill
+            theme="snow"
+            placeholder="Write something..."
+            className="mb-10 h-52 "
+            required
+            onChange={(value) =>
+              setFormData({ ...formData, judgeStatement: value })
+            }
+          />
+          <Button type="submit" gradientDuoTone="purpleToBlue">
+            Attach Statment
+          </Button>
+          {createTempError && (
+            <Alert className="mt-5" color="failure">
+              {createTempError}
+            </Alert>
           )}
         </div>
-        <div className="flex flex-col">
-          <h2 className="my-5 text-xl">Write your case</h2>
-        </div>
+
         <div className="flex flex-col my-10 gap-4 p-5 dark:bg-slate-800   rounded-md shadow-md">
-          <h1 className="text-xl text-center justify-between">
-            Case Information
-          </h1>
           {formData.state === "approved" && (
             <h1 className="ml-10 mt-2 flex items-center text-xl font-extrabold dark:text-white">
               Date :
@@ -410,21 +381,6 @@ export default function CaseSubmitionReview() {
             </h1>
           )}
         </div>
-        {formData.state === "denied" && (
-          <Button
-            type="submit"
-            className="mb-4 mx-auto  items-center justify-between"
-            gradientDuoTone="purpleToBlue"
-          >
-            Update My Case
-          </Button>
-        )}
-        {createTempError && (
-          <Alert className="mt-5" color="failure">
-            {createTempError}
-          </Alert>
-        )}
-        {error && <Alert color="failure">{error}</Alert>}
       </form>
     </div>
   );

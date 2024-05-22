@@ -230,13 +230,7 @@ export default function CaseSubmitionReview() {
               </div>
             ) : (
               <>
-                <FileInput
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) =>
-                    setFormData({ ...formData, image1: e.target.files[0] })
-                  }
-                />
+                <h1>Not Sent</h1>
               </>
             )}
           </div>
@@ -287,7 +281,7 @@ export default function CaseSubmitionReview() {
               </div>
             ) : (
               <>
-                <h1>Not Uploaded</h1>
+                <h1>Not Sent</h1>
               </>
             )}
           </div>
@@ -297,6 +291,15 @@ export default function CaseSubmitionReview() {
           <div
             className="max-w-xl mx-auto w-full p-3 post-content"
             dangerouslySetInnerHTML={{ __html: formData && formData.details }}
+          ></div>
+        </div>
+        <h2 className="my-5 text-xl">Judge Statment</h2>
+        <div className="flex flex-col">
+          <div
+            className="max-w-xl mx-auto w-full p-3 post-content"
+            dangerouslySetInnerHTML={{
+              __html: formData && formData.judgeStatement,
+            }}
           ></div>
         </div>
         <div className="mt-5">

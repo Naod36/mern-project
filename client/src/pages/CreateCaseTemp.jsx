@@ -83,7 +83,7 @@ export default function CreateCaseTemp() {
   };
   return (
     <div className="p-3 max-w-3xl mx-auto min-h-screen">
-      <h1 className="p-5 my-7 text-3xl  font-bold">Create Case Template</h1>
+      <h1 className="p-5 my-7 text-3xl  font-bold">Create Case Guide</h1>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-4 sm:flex-row justify-between">
           <TextInput
@@ -149,7 +149,7 @@ export default function CreateCaseTemp() {
           onChange={(value) => setFormData({ ...formData, content: value })}
         />
         <Button type="submit" gradientDuoTone="purpleToBlue">
-          Add Template
+          Add Guide
         </Button>
         {createTempError && (
           <Alert className="mt-5" color="failure">

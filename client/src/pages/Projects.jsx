@@ -20,7 +20,7 @@ export default function Projects() {
     <div>
       <div>
         <div className="flex flex-col gap-6 px-3 max-w-6xl mx-auto p-10">
-          <h2 className="text-2xl font-semibold text-center">Case Templates</h2>{" "}
+          <h2 className="text-2xl font-semibold text-center">Case Guide</h2>{" "}
           {/* <p className="text-gray-500 text-xs sm:text-sm">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint harum
             accusantium assumenda velit illum omnis dolor nihil officiis atque

@@ -287,6 +287,34 @@ export const processAnswer = async (req, res, next) => {
   }
 };
 
+export const attachStatement = async (req, res, next) => {
+  try {
+    // Extract data from request body
+    const { answerId, judgeStatement } = req.body;
+
+    // Find the answer by ID
+    const foundAnswer = await Answer.findById(answerId);
+    if (!foundAnswer) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Answer not found" });
+    }
+
+    foundAnswer.judgeStatement = judgeStatement;
+
+    // Save the updated answer to the database
+    await foundAnswer.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Answer processed successfully",
+      data: foundAnswer,
+    });
+  } catch (error) {
+    errorHandler(error, next);
+  }
+};
+
 export const updatemycase = async (req, res, next) => {
   if (!req.user.isAdmin && req.user.id !== req.params.userId) {
     return next(
@@ -390,6 +418,7 @@ export const assignCaseToJudge = async (req, res, next) => {
 
     // Emit socket event to notify assigned judge
     io.to(judgeId).emit("stateUpdated", updatedCase);
+    io.to(judgeId).emit("caseAssigned", updatedCase); // Emit a different event
 
     // res.status(200).send("Case assigned successfully");
     res.status(200).json({ message: "Case assigned successfully" });
@@ -424,7 +453,10 @@ export const getCasesAssignedToJudge = async (req, res) => {
       .map((assignment) => assignment.caseId);
 
     // Fetch the cases from the Answer model using the caseIds
-    const cases = await Answer.find({ _id: { $in: caseIds } });
+    const cases = await Answer.find({
+      _id: { $in: caseIds },
+      state: "approved",
+    });
     // const data = cases.map((caseData) => {
     //   return {
     //     id: caseData._id,

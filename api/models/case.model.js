@@ -36,17 +36,21 @@ const AnswerSchema = new Schema(
     },
     image1: {
       type: String, // You can adjust the type as per your requirements (e.g., Buffer for file upload)
-      // required: true,
+      required: true,
     },
     image2: {
       type: String, // You can adjust the type as per your requirements (e.g., Buffer for file upload)
-      // required: true,
+      required: true,
     },
     category: {
       type: String,
       default: "Divorce Case",
     },
     details: {
+      type: String,
+      // required: true,
+    },
+    judgeStatement: {
       type: String,
       // required: true,
     },

@@ -93,7 +93,7 @@ export default function DashSidebar() {
                 icon={HiDocumentText}
                 as="div"
               >
-                Case Temp
+                Case Guide
               </Sidebar.Item>
             </Link>
           )}

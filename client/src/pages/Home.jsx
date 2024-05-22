@@ -33,7 +33,7 @@ export default function Home() {
             to="/case-templates"
             className="text-xs sm:text-sm text-teal-500 font-bold hover:underline"
           >
-            Viwe Case Templates
+            Viwe Case Guide
           </Link>
         </div>
         <div className="flex-1">

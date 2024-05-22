@@ -253,7 +253,7 @@ export default function DashProfile() {
               gradientDuoTone={"purpleToBlue"}
               className="w-full"
             >
-              Creat Case Template
+              Creat Case Guide
             </Button>
           </Link>
         )}
