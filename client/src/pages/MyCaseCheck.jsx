@@ -397,6 +397,11 @@ export default function CaseSubmitionReview() {
                 Denied
               </span>
             )}
+            {formData.state === "closed" && (
+              <span className="shadow-md bg-gray-700 text-slate-100 text-2xl font-semibold me-2 px-2.5 py-0.5 rounded dark:bg-gray-600 dark:text-slate-200 ms-2">
+                Case Closed
+              </span>
+            )}
           </h1>
           {formData.state === "approved" && (
             <h1 className="ml-10 mt-2 flex items-center text-xl font-extrabold dark:text-white">
@@ -432,7 +437,21 @@ export default function CaseSubmitionReview() {
               review for the reason stated and try again
             </h1>
           )}
+          {formData.state === "closed" && (
+            <h1 className="ml-10 mt-2 flex items-center text-xl font-extrabold dark:text-white">
+              Case Result :
+              <span className="shadow-md bg-inherit text-slate-900 text-xl font-semibold me-2 px-2.5 py-0.5 rounded dark:bg-inherit dark:text-slate-200 ms-2">
+                {formData.result}
+              </span>
+            </h1>
+          )}
+          {formData.state === "closed" && (
+            <h1 className="text-gray-500 ml-10">
+              Case Closed With The Above Closing Statment
+            </h1>
+          )}
         </div>
+
         {formData.state === "denied" && (
           <Button
             type="submit"

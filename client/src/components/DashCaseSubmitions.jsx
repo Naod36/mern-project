@@ -52,6 +52,8 @@ export default function DashCaseSubmitions() {
 
       case "denied":
         return { color: "red", fontWeight: "bold" };
+      case "closed":
+        return { color: "gray", fontWeight: "bold" };
       default:
         return { color: "orange", fontWeight: "bold" };
     }

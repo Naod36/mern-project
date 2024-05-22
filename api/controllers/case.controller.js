@@ -249,7 +249,7 @@ export const processAnswer = async (req, res, next) => {
     }
 
     // Extract data from request body
-    const { answerId, state, date, reason } = req.body;
+    const { answerId, state, date, reason, result } = req.body;
 
     // Find the answer by ID
     const foundAnswer = await Answer.findById(answerId);
@@ -266,6 +266,9 @@ export const processAnswer = async (req, res, next) => {
     } else if (state === "denied") {
       foundAnswer.state = "denied";
       foundAnswer.reason = reason; // Set the denial reason provided by the admin
+    } else if (state === "closed") {
+      foundAnswer.state = "closed";
+      foundAnswer.result = result;
     } else {
       return res
         .status(400)
@@ -417,7 +420,7 @@ export const getCasesAssignedToJudge = async (req, res) => {
 
     // Filter assignments to get only those with the specific judgeId
     const caseIds = judge.assignments
-      .filter((assignment) => assignment.caseId.judgeId.toString() === judgeId)
+      // .filter((assignment) => assignment.caseId.judgeId.toString() === judgeId)
       .map((assignment) => assignment.caseId);
 
     // Fetch the cases from the Answer model using the caseIds

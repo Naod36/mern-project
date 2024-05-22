@@ -19,6 +19,7 @@ export default function CaseSubmitionReview() {
     reason: "",
     date: "",
     state: "",
+    result: "",
     // other fields if any
   });
   const [createTempError, setCreateTempError] = useState(null);
@@ -135,6 +136,7 @@ export default function CaseSubmitionReview() {
       state: finalFormData.state,
       ...(finalFormData.state === "approved" && { date: selectedDate }),
       ...(finalFormData.state === "denied" && { reason: finalFormData.reason }),
+      ...(finalFormData.state === "closed" && { result: finalFormData.result }),
     };
     try {
       const res = await fetch(`/api/case/process-answer/${caseId}`, {
@@ -339,6 +341,25 @@ export default function CaseSubmitionReview() {
                 </label>
               </div>
             </li>
+            <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
+              <div className="flex items-center ps-3">
+                <input
+                  type="radio"
+                  value="closed"
+                  checked={formData.state === "closed"}
+                  onChange={() => setFormData({ ...formData, state: "closed" })}
+                  id="horizontal-list-radio-id"
+                  name="list-radio"
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                />
+                <label
+                  htmlFor="horizontal-list-radio-id"
+                  className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                >
+                  Close Case
+                </label>
+              </div>
+            </li>
           </ul>
         </div>
         <div className="mt-5 flex flex-col mb-5 gap-4">
@@ -418,6 +439,26 @@ export default function CaseSubmitionReview() {
                 setFormData({
                   ...formData,
                   reason: e.target.value,
+                })
+              }
+            />
+          )}
+          {formData.state === "closed" && (
+            <h2 className="text-xl font-semibold text-center">
+              Provide a result for the case
+            </h2>
+          )}
+          {formData.state === "closed" && (
+            <TextInput
+              type="text"
+              placeholder="Enter Result"
+              required
+              id="Result"
+              value={formData.result}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  result: e.target.value,
                 })
               }
             />
